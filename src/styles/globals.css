@@ -1,0 +1,177 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@plugin "@tailwindcss/forms";
+
+@theme {
+    --color-blueFB: #003064;
+    --color-orangeFB: #FF8300;
+    --color-dark-greyFB: #4d4d4d;
+    --color-light-greyFB: #C4C4C4;
+    --color-hoverli: #E8EAF6;
+}
+
+@layer base {
+    input{
+        @apply
+        w-[70%]
+        h-[10%]
+        bg-white
+        rounded-sm
+        border-2
+        border-light-greyFB
+        p-2
+        ;
+    }
+    h1{
+        @apply
+        text-3xl
+        font-bold
+        text-blueFB
+            pt-5
+            pb-5
+
+        ;
+
+    }
+
+    h2{
+        @apply
+        text-2xl
+        font-bold
+        text-blueFB
+            p-2
+        ;
+
+    }
+
+    h3{
+        @apply
+        text-xl
+        font-bold
+        text-blueFB
+            p-2
+        ;
+
+    }
+
+    label{
+        @apply
+        text-blueFB
+        font-semibold
+    }
+
+    select{
+        @apply
+        w-[70%]
+        h-[10%]
+        bg-white
+        rounded-sm
+        border-2
+        border-light-greyFB
+        p-2
+        ;
+    }
+
+    input{
+        @apply
+        w-[70%]
+        h-[10%]
+        bg-white
+        rounded-sm
+        border-2
+        border-light-greyFB
+        p-2
+        ;
+    }
+
+    li{
+        @apply
+        hover:border-orangeFB
+        ;
+    }
+
+
+}
+
+@layer components {
+    .btn {
+        @apply
+        px-4 py-2 rounded-md mt-10
+        text-white
+        font-bold
+        shadow-2xl
+        ;
+    }
+
+    .btn-orange {
+        @apply
+        bg-orangeFB
+        hover:bg-blueFB
+        ;
+    }
+
+    .btn-blue {
+        @apply
+        bg-blueFB
+        hover:bg-light-greyFB
+        ;
+    }
+
+    .user-container {
+        @apply
+        flex
+        justify-end
+        px-2
+        py-0.5
+        gap-6
+        bg-blueFB
+        hover:border-orangeFB
+        ;
+    }
+
+
+    .molde-list-item {
+        @apply
+        grid
+        grid-cols-[0.2fr_0.3fr_1fr]
+        grid-rows-[1fr_1fr]
+        justify-items-center
+        items-center
+        transition-all duration-500
+        font-semibold
+        text-blueFB
+        bg-blue-50
+        text-lg leading-[1.3]
+        m-[30px];
+    }
+
+    .pagination {
+        @apply
+        justify-items-center
+        items-center
+        transition-all duration-500
+        font-semibold
+        text-blueFB
+        bg-light-greyFB
+        border-2
+        border-blueFB
+        hover:border-orangeFB
+        text-lg leading-[1.3]
+        m-[50px];
+    }
+    .input [type='text']{
+        @apply
+        w-[70%]
+        h-[10%]
+        bg-blueFB
+        rounded-sm
+        border-2
+        border-light-greyFB
+        p-2
+        focus:ring-pink-500
+    }
+
+
+
+
+}
