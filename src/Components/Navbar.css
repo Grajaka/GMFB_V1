@@ -8,6 +8,7 @@
     nav {
         @apply
         flex
+            m-4
         justify-between
         w-full
         h-[10%]
