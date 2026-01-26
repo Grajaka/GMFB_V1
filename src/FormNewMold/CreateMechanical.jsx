@@ -14,23 +14,37 @@ export default function CreateMechanical() {
                 <div className="space-y-8">
 
                     <div className="col-start-1 row-start-1">
-                        <label className="block p-1">Acero</label>
-                        <input type="text" inputMode="text" placeholder="Acero"/>
+                        <div>
+                            <label className=" block p-2">Acero</label>
+                            <select className="">
+                                <option value="" disabled selected> Acero</option>
+                            </select>
+                        </div>
                         <div>
                             <label className=" block p-2">Tto Térmico</label>
                             <select className="">
                                 <option value="" disabled selected> Tto Térmico</option>
                             </select>
                         </div>
-                        <label className=" block p-1">Dureza RC</label>
-                        <input type="number" inputMode="numeric" placeholder="Dureza RC "/>
+
+                        <div>
+                            <label className=" block p-2">Dureza RC</label>
+                            <select className="">
+                                <option value="" disabled selected> HRC</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className=" block p-2">Proveedor</label>
+                            <select className="">
+                                <option value="" disabled selected> Proveedor</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
                 {/*------------------------------*/}
                 <div>
                     <div className="col-start-2 row-start-1">
-                        <label className="block p-1">Proveedor</label>
-                        <input type="text" inputMode="text" placeholder="Proveedor"/>
+
                         <label className="block p-1">Precio</label>
                         <input type="number" inputMode="numeric" placeholder="$Precio"/>
                         <label className=" block p-1">Fecha de creación</label>

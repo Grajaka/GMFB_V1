@@ -45,14 +45,22 @@ import {useEffect, useState, useRef} from 'react';
 
 
         try {
-            const result = await axiosInstance({
-                url,
-                method,
-                data,
-                params,
-                signal: controllerRef.current.signal
-            });
-            setResponse(result.data);
+            //check if url is an array or string
+            if (Array.isArray(url)) {
+                const requests = url.map(targetUrl => axiosInstance({url: targetUrl, method, data, params, signal: controllerRef.current.signal}));
+                const results = await Promise.all(requests);
+                setResponse(results.map(result => result.data));
+
+            }else {
+                const result = await axiosInstance({
+                    url,
+                    method,
+                    data,
+                    params,
+                    signal: controllerRef.current.signal
+                });
+                setResponse(result.data);
+            }
         } catch (error) {
             if(axios.isCancel(error)){
                 console.error('Request canceled', error.message)

@@ -12,9 +12,9 @@ export default function VisualMold() {
         <NavBar/>
 
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-auto grid-rows-[2,auto]  gap-5 w-scree h-screen m-5">
+        <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-auto grid-rows-[2,auto]  gap-5 w-scree h-screen m-15 font-[Poppins]">
 
-            <div className="col-start-1 row-start-1 ">
+            <div className="col-start-1 row-start-1 font-bold ">
                 <h2>Hoja de vida molde {moldeID}</h2>
                 <Avatar
                     alt={moldeID}
@@ -51,7 +51,7 @@ export default function VisualMold() {
                     <Avatar
                         alt={moldeID}
                         src="src/assets/MoldesImg/qr-code.png"
-                        sx={{width: 50, height: 50}}
+                        sx={{width: 80, height: 80}}
                         variant="rounded"
                         className=""
                     />

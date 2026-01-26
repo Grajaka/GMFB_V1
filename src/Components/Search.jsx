@@ -1,4 +1,5 @@
 import * as React from 'react';
+import '../styles/globals.css'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -11,11 +12,11 @@ let theme = createTheme({
 theme = createTheme(theme, {
     // Custom colors created with augmentColor go here
     palette: {
-        grayIcon: theme.palette.augmentColor({
+        blueFB: theme.palette.augmentColor({
             color: {
-                main: '#4d4d4d',
+                main: '#003064',
             },
-            name: 'grayIcon',
+            name: 'blueFB',
         }),
     },
 });
@@ -24,9 +25,9 @@ export default function Search() {
     return (
         <ThemeProvider theme={theme}>
             <div className="flex-row inline-flex items-center ml-0 m-5">
-                <MenuIcon fontSize="large" color="grayIcon"/>
-                <input inputMode="text" placeholder="Buscar"/>
-                <button className="bg-white rounded-r-sm h-9.5 border-l-gray-500"><SearchIcon/></button>
+                <MenuIcon fontSize="large" color="blueFB"/>
+                <input className="rounded-r-none font-semibold<"  type="text" placeholder="Buscar"/>
+                <button className="bg-white h-10.5 border-l-gray-500 rounded-r-sm "><SearchIcon color={"blueFB"}/></button>
             </div>
         </ThemeProvider>
 
