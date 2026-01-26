@@ -63,8 +63,6 @@ export default function CreateGnrl() {
     };
 
 
-
-
     const [Altern, setAltern] = useState(" ");
     const {response, error, loading, fetchData} = useAxios();
     const urls = [
@@ -72,7 +70,6 @@ export default function CreateGnrl() {
         "/api/familia/",
         "api/herramental/"
     ];
-
 
 
     useEffect(() => {
@@ -106,28 +103,28 @@ export default function CreateGnrl() {
                 <div>
                     <div>
                         <label className="block p-2">Tipo Herramental</label>
-                        <select value=" " onChange={handleHerramentalChange} >
-                            <option disabled selected> Seleccione Herramental</option>
+                        <select onChange={handleHerramentalChange}>
+                            <option hidden> Seleccione Herramental</option>
                             {herramentales?.map((item) => (
-                            <option value={item.id} key={item.id} >{item.nombre}</option>
+                                <option value={item.id} key={item.id}>{item.nombre}</option>
                             ))}
                         </select>
                     </div>
                     <div>
                         <label className="block p-2">Función Molde</label>
-                        <select onChange={handleTipoChange} value=" ">
-                            <option disabled> Seleccione Función Herramental</option>
+                        <select onChange={handleTipoChange}>
+                            <option hidden> Seleccione Función Herramental</option>
                             {tipo_herramental?.map((type) => (
-                                <option  value={type.id} key={type.id} >{type.nombre}</option>
+                                <option value={type.id} key={type.id}>{type.nombre}</option>
                             ))}
                         </select>
                     </div>
                     <div>
                         <label className="block p-2"> Familia Herramental</label>
-                        <select onChange={handleFamiliaChange} >
-                            <option disabled> Seleccione familia Herramental</option>
+                        <select onChange={handleFamiliaChange}>
+                            <option hidden> Seleccione familia Herramental</option>
                             {familias?.map((item) => (
-                                <option value={item.id} key={item.id} >{item.nombre}</option>
+                                <option value={item.id} key={item.id}>{item.nombre}</option>
                             ))}
                         </select>
                     </div>
@@ -138,22 +135,25 @@ export default function CreateGnrl() {
                     <div className="space-y-4 md:col-start-2 ">
                         <div className="">
                             <label className="block p-2"> Código alterno</label>
-                            <input type="text" placeholder="Código alterno" onChange={(e) => setAltern(e.target.value)}/>
+                            <input type="text" placeholder="Código alterno"
+                                   onChange={(e) => setAltern(e.target.value)}/>
                         </div>
                         <div>
                             <h3>Descripción 1</h3>
-                            <p className="uppercase" > {Description} </p>
+                            <p className="uppercase"> {Description} </p>
                             <h3>Código QR </h3>
 
+                            <div className="flex pt-10 pb-12">
                                 <QRCode
                                     size={256}
-                                    style={{ height: "auto", maxWidth: "20%", width: "20%" }}
+                                    style={{height: "auto", maxWidth: "20%", width: "20%"}}
                                     value={Description}
                                     viewBox={`0 0 256 256`}
                                 />
+                            </div>
 
                         </div>
-                        <h1>Código Final</h1>
+                        <span className="m-0 text-2xl text-blueFB">Código Final</span>
                         <h4>{CHerramental}{CTipoHerramental}-{CFamilia}</h4>
 
                     </div>

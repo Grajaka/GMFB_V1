@@ -15,7 +15,7 @@ export default function VisualMold() {
         <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-auto grid-rows-[2,auto]  gap-5 w-scree h-screen m-15 font-[Poppins]">
 
             <div className="col-start-1 row-start-1 font-bold ">
-                <h2>Hoja de vida molde {moldeID}</h2>
+                <h1>Hoja de vida molde {moldeID}</h1>
                 <Avatar
                     alt={moldeID}
                     src="src/assets/MoldesImg/M-HX01.jpeg"
@@ -94,7 +94,7 @@ export default function VisualMold() {
 
 
             <h2>Dimensiones</h2>
-            <div className="space-x-8 p-2">
+            <div className="flex justify-around  space-x-8 p-2">
                 <span className="dimensions-card">A:</span>
                 <span className="dimensions-card">B:</span>
                 <span className="dimensions-card">C:</span>
@@ -127,7 +127,7 @@ export default function VisualMold() {
 
         <div className="col-start-3 row-start-2">
 
-            <h2>Observaciones:</h2>
+            <h3>Observaciones:</h3>
             <p className="w-100 h-auto">Lorem ipsum dolor sit amet consectetur adipiscing elit suscipit eget, neque vulputate laoreet
                 hac proin vestibulum duis dictumst scelerisque lacinia, conubia sociis est bibendum
                 imperdiet massa dis fames. Platea varius aptent a nisl, suspendisse cum phasellus fringilla

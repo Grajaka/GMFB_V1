@@ -85,7 +85,7 @@ export default function CreateMeasures() {
 
                     {/*-----------------Buttons---------------------------------------- */}
 
-                    <Link to="/CreateMechanical" className="col-start-4 row-start-3 ">
+                    <Link to="/Createubic" className="col-start-4 row-start-3 ">
                         <button className="btn btn-orange ">Continuar</button>
                     </Link>
 
