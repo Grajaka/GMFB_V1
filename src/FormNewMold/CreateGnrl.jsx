@@ -6,68 +6,85 @@ import CreateMeasures from "./CreateMeasures.jsx";
 import NavBar from "../Components/NavBar.jsx";
 
 
-
 export default function CreateGnrl() {
     return (
         <>
             <NavBar/>
-
-            <div className="m-5 justify-items-center">
-                <div className="flex gap-2 flex-row justify-self-start m-4">
-                    <h1> Código</h1>
-                    <Avatar sx={{width: 24, height: 24}}/>
+            <h1> Información General</h1>
+            <form className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-full m-5 ">
+                <div>
+                    <div>
+                        <label className="block p-2">Tipo Herramental</label>
+                        <select>
+                            <option value="" disabled selected>Herramental</option>
+                            <option value=""> Molde</option>
+                            <option value=""> Troquel</option>
+                            <option value=""> Copa</option>
+                            <option value=""> Dispositivo</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label className=" block p-2">Función Molde</label>
+                        <select>
+                            <option value="" disabled selected> Función Herramental</option>
+                            <option value=""> Estampador</option>
+                            <option value=""> Recogedor</option>
+                            <option value=""> Desbarbador</option>
+                            <option value=""> Punzonador</option>
+                            <option value=""> Doblador</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label className=" block p-2">Familia Herramental</label>
+                        <select className="">
+                            <option value="" disabled selected> Familia</option>
+                            <option value="">General</option>
+                            <option value="">N/A</option>
+                        </select>
+                    </div>
                 </div>
 
-                <form className="grid grid-cols-3 grid-rows-2  ">
-                    <div className="space-y-8">
-                        <input type="text" className="form-{input}" placeholder="N° molde"/>
-                        <select></select>
-                        <select></select>
-                        <select></select>
-                        <input type="number" inputMode="numeric" placeholder="Copas"/>
+                <div className="space-y-8">
+                    <div className="">
+                        <label className=" block p-2">Carac. Molde</label>
+                        <select>
+                            <option value="" disabled selected> Carac. Molde</option>
+                        </select>
                     </div>
-
-
-                    <div className="space-y-8">
-                        <select></select>
-                        <select></select>
-                        <select></select>
-
-                        <div
-                            className=" flex flex-row gap-4 items-center justify-self-start  whitespace-nowrap overflow-hidden text-ellipsis">
-                            <p>Con Nariz</p>
-                            <input type="checkbox" placeholder="Con Nariz"/>
-                            <p>Sin Nariz</p>
-                            <input type='checkbox' placeholder="Sin Nariz"/>
-
+                    <div
+                        className=" flex flex-row gap-4 items-center flex-wrap ">
+                        <p>Con Nariz</p>
+                        <input type="checkbox"/>
+                        <p>Sin Nariz</p>
+                        <input type="checkbox"/>
+                    </div>
+                    <div className="space-y-4 md:col-start-2 ">
+                        <div>
+                            <h3>Descripción 1</h3>
+                            <p>Lorem ipsum dolor diet massa dis fames. spendisse cum phasellus fringilla at,
+                                senectus
+                                ultricies fusce.</p>
+                            <h3>Descripción 2</h3>
+                            <p>Lorem ipsum dolor sit amet consectetur adipiscing elit suscipit eget, neque vulputate
+                                laoreet
+                                hac proin vestibulum duis dictumst scelerisque lacinia, conubia sociis est bibendum
+                                imperdiet massa dis fames. Platea varius aptent a nisl, suspendisse cum phasellus
+                                fringilla
+                                at, senectus ultricies fusce.</p>
                         </div>
                     </div>
+                </div>
 
-                    <div>
-                        <h3>Descripción 1</h3>
-                        <p>Lorem ipsum dolor diet massa dis fames. spendisse cum phasellus fringilla at, senectus
-                            ultricies fusce.</p>
+                <Link to="/VisualGnrl" className="">
+                    <button className="btn btn-orange col-start-1 row-start-2">Atrás</button>
+                </Link>
+                <Link to="/CreateMeasures">
+                    <button
+                        className="btn btn-orange grid-col-2 row-start-2 sm:col-start-2 flex justify-end">Continuar
+                    </button>
+                </Link>
 
-                        <h3>Descripción 2</h3>
-                        <p>Lorem ipsum dolor sit amet consectetur adipiscing elit suscipit eget, neque vulputate laoreet
-                            hac proin vestibulum duis dictumst scelerisque lacinia, conubia sociis est bibendum
-                            imperdiet massa dis fames. Platea varius aptent a nisl, suspendisse cum phasellus fringilla
-                            at, senectus ultricies fusce.</p>
-
-                    </div>
-
-                        <Link to="/CreateMeasures" className="col-start-3 row-start-2">
-                            <button className="btn btn-orange ">Continuar</button>
-                        </Link>
-
-                    <Link to="/VisualGnrl" className="col-start-1 row-start-2">
-                        <button className="btn btn-orange">Atrás</button>
-                    </Link>
-
-                </form>
-
-
-            </div>
+            </form>
         </>
     )
 }

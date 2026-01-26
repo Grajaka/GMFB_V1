@@ -66,8 +66,13 @@ export default function VisualGnrl() {
 function MoldesList(){
     const moldes = initialMoldes;
     return(
+
         <ul className="">{moldes.map((molde)=>(
-            <Molde molde = {molde} key={molde.id}/>
+            <Link to = "/VisualMold" state={{id : molde.id}}>
+            <Molde
+                key={molde.id}
+                molde = {molde}/>
+            </Link>
         ))}</ul>
     );
 }

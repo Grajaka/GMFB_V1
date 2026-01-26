@@ -1,6 +1,8 @@
 import '../styles/globals.css'
 import NavBar from "../Components/NavBar.jsx";
 import * as React from "react";
+import useAxios from "../Hooks/useAxios/IndexAx.jsx";
+import {useState} from "react";
 
 const headers= [
     {

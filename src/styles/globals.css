@@ -1,5 +1,7 @@
 @import "tailwindcss";
+
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
 @plugin "@tailwindcss/forms";
 
 @theme {
@@ -11,80 +13,103 @@
 }
 
 @layer base {
-    input{
+    /* Complete form element reset with your styles */
+    input[type="text"],
+    input[type="email"],
+    input[type="url"],
+    input[type="password"],
+    input[type="number"] {
         @apply
         w-[70%]
-        h-[10%]
+        h-[50%]
         bg-white
         rounded-sm
         border-2
         border-light-greyFB
         p-2
-        ;
+        focus:border-blueFB
+        hover:border-blueFB
+    },
+
+
+    input[type="date"] {
+    @apply
+    bg-black
+    rounded-lg
+    border-4
+    border-light-greyFB
+    p-2
+    focus:border-blueFB
+    hover:border-blueFB
+},
+input[type="datetime-local"], input[type="month"], input[type="search"], input[type="tel"], input[type="time"], input[type="week"],
+textarea {
+    @apply
+    rounded-lg
+    border-light-greyFB
+    focus:border-blueFB
+    hover:border-blueFB
+}
+    select {
+        @apply
+        w-[70%]
+        h-[50%]
+        bg-white
+        rounded-sm
+        border-2
+        border-light-greyFB
+        p-2
+        focus:border-blueFB
+        hover:border-blueFB
     }
-    h1{
+
+    select:not([multiple]) {
+        border-radius: 0.2rem !important;
+    }
+
+    select[multiple] {
+        border-radius: 0.2rem !important;
+    }
+
+
+    h1 {
         @apply
         text-3xl
         font-bold
         text-blueFB
-            pt-5
-            pb-5
-
+        m-5
         ;
 
     }
 
-    h2{
+    h2 {
         @apply
-        text-2xl
         font-bold
-        text-blueFB
-            p-2
+        text-dark-greyFB
+        p-2
         ;
 
     }
 
-    h3{
+    h3 {
         @apply
-        text-xl
+        text-shadow-md
         font-bold
-        text-blueFB
-            p-2
+        text-orangeFB
+        p-2
         ;
 
     }
 
-    label{
+    label {
         @apply
         text-blueFB
         font-semibold
+        block p-2
     }
 
-    select{
-        @apply
-        w-[70%]
-        h-[10%]
-        bg-white
-        rounded-sm
-        border-2
-        border-light-greyFB
-        p-2
-        ;
-    }
 
-    input{
-        @apply
-        w-[70%]
-        h-[10%]
-        bg-white
-        rounded-sm
-        border-2
-        border-light-greyFB
-        p-2
-        ;
-    }
-
-    li{
+    li {
         @apply
         hover:border-orangeFB
         ;
@@ -159,19 +184,40 @@
         text-lg leading-[1.3]
         m-[50px];
     }
-    .input [type='text']{
+
+    .card-form{
         @apply
-        w-[70%]
-        h-[10%]
-        bg-blueFB
-        rounded-sm
         border-2
         border-light-greyFB
-        p-2
-        focus:ring-pink-500
+        rounded-md
     }
 
+    .card-Mechanics{
+        @apply
+        border-2
+        bg-dark-greyFB
+        text-white
 
+        shadow-md
+        rounded-md
+        p-2
+        my-4
+        h-auto
+        w-100
 
+    }
 
+    .dimensions-card{
+        @apply
+        content-evenly
+        w-[70%]
+        h-[50%]
+        bg-white
+        rounded-sm
+        border-1
+        border-orangeFB
+        p-2
+        text-center
+    }
 }
+

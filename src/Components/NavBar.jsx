@@ -13,6 +13,7 @@ export default function NavBar() {
                 <Link to={"/"}>
                     <img className="max-w-1/30 mx-4  transition-all hidden sm:flex" src={logo} alt="logo"/>
                 </Link>
+
                 <Link
                     to={"/VisualGnrl"}>
                     <li className="border-t-2 border-white py-0.5 hover:border-orangeFB"> Home</li>
@@ -20,7 +21,7 @@ export default function NavBar() {
                 <Link to={"/CreateGnrl"}>
                     <li className="border-t-2 border-white py-0.5 hover:border-orangeFB">Moldes</li>
                 </Link>
-                <Link to={"/Orders"}>
+                <Link to={"/OrdAPi"}>
                     <li className="border-t-2 border-white py-0.5 hover:border-orangeFB">Ordenes</li>
                 </Link>
             </ul>
