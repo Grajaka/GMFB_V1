@@ -11,6 +11,10 @@
     --color-light-greyFB: #C4C4C4;
     --color-hoverli: #E8EAF6;
     --font-primary: "Poppins", sans-serif;
+    --orange: "bg-[#FF8C00]";
+    --orangeText: "text-[#FF8C00]";
+    --darkGrey: "bg-[#4D4D4D]";
+    --lightGrey: "bg-[#F2F2F2]";
 
 }
 h1 {

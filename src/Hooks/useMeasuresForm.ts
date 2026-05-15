@@ -1,20 +1,37 @@
-// src/hooks/useFamiliaSchema.js
+import { useForm, type UseFormReturn } from 'react-hook-form';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { HerramentalModelSchema, PageMeasuresSchema } from "./Validators/HerramentalEsp.js"
+type MeasuresFormData = z.infer<typeof PageMeasuresSchema>;
+import {type FamiliasSchema, type FamilySchemaItem} from "./Validators/FamilyScheme.js";
+import rawFamiliasSchema from '../assets/Schemas/familias.schema.json' with {type: 'json'};
 
-import familiasSchema from '../assets/Schemas/familias.schema.json';
+// Properly cast the JSON as our typed schema
+const familiasSchema = rawFamiliasSchema as FamiliasSchema;
 
-const useFamiliaSchema = (codFamilia) => {
-    if (!codFamilia || codFamilia === 'nan') {
-        return []; // No hay literales si el código es inválido
-    }
 
-    const familiaData = familiasSchema[codFamilia];
+export const useMeasuresForm = (familyCode: string | undefined)=> {
 
-    if (familiaData && Array.isArray(familiaData.Literals)) {
-        // Retorna solo la lista de literales
-        return familiaData.Literals;
-    }
+    // Handle the lookup with a fallback to 'nan'
+    const effectiveCode = (familyCode && familiasSchema[familyCode]) ? familyCode : 'nan';
+    const familyData: FamilySchemaItem = familiasSchema[effectiveCode] ?? familiasSchema['nan'];
 
-    return []; // Por defecto, retorna un array vacío
+    // Initialize the form with types
+    const  methods =useForm<MeasuresFormData>({
+        shouldUnregister: true,
+        resolver: zodResolver(PageMeasuresSchema),
+        mode: "onChange"
+    });
+
+    const assetBaseUrl = "http://10.1.1.14/media/esquemas";
+    return {
+        ...methods,
+        literals:familyData.Literals,
+        schemeUrl: `${assetBaseUrl}/${familyData.EsquemaFamilia}.png`,
+        familyName: familyData.Familia,
+    };
+
 };
 
-export default useFamiliaSchema;
+
+

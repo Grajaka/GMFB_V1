@@ -1,0 +1,426 @@
+
+{
+  "nan": {
+    "Familia": "nan",
+    "CodFamilia": "nan",
+    "EsquemaFamilia": "nan",
+    "Literals": []
+  },
+  "GN": {
+    "Familia": "GENERAL",
+    "CodFamilia": "GN",
+    "EsquemaFamilia": "GENERAL",
+    "Literals": []
+  },
+  "HX": {
+    "Familia": "HEXAGONAL",
+    "CodFamilia": "HX",
+    "EsquemaFamilia": "HEXAGONAL",
+    "Literals": [
+      "A",
+      "B",
+      "E"
+    ]
+  },
+  "CU": {
+    "Familia": "CUADRADO",
+    "CodFamilia": "CU",
+    "EsquemaFamilia": "CUADRADO",
+    "Literals": [
+      "A",
+      "B",
+      "E",
+      "P"
+    ]
+  },
+  "RE": {
+    "Familia": "RECTANGULAR",
+    "CodFamilia": "RE",
+    "EsquemaFamilia": "RECTANGULAR",
+    "Literals": [
+      "A",
+      "B",
+      "C",
+      "E"
+    ]
+  },
+  "OV": {
+    "Familia": "OVALADA",
+    "CodFamilia": "OV",
+    "EsquemaFamilia": "OVALADA",
+    "Literals": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ]
+  },
+  "PA": {
+    "Familia": "PALETAS",
+    "CodFamilia": "PA",
+    "EsquemaFamilia": "PALETAS",
+    "Literals": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "H"
+    ]
+  },
+  "MT": {
+    "Familia": "MPLAT",
+    "CodFamilia": "MT",
+    "EsquemaFamilia": "MPLAT",
+    "Literals": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "F"
+    ]
+  },
+  "CL": {
+    "Familia": "CILINDRICO",
+    "CodFamilia": "CL",
+    "EsquemaFamilia": "CILINDRICO",
+    "Literals": []
+  },
+  "TET": {
+    "Familia": "TLLO EN T",
+    "CodFamilia": "TET",
+    "EsquemaFamilia": "TLLO EN T",
+    "Literals": [
+      "A",
+      "B",
+      "E"
+    ]
+  },
+  "BJ": {
+    "Familia": "BUJE",
+    "CodFamilia": "BJ",
+    "EsquemaFamilia": "BUJE",
+    "Literals": []
+  },
+  "GT": {
+    "Familia": "GRILLETE",
+    "CodFamilia": "GT",
+    "EsquemaFamilia": "GRILLETE",
+    "Literals": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H"
+    ]
+  },
+  "SK": {
+    "Familia": "SOCKET",
+    "CodFamilia": "SK",
+    "EsquemaFamilia": "SOCKET",
+    "Literals": [
+      "A",
+      "B",
+      "D",
+      "E"
+    ]
+  },
+  "BRT": {
+    "Familia": "BRISTOL",
+    "CodFamilia": "BRT",
+    "EsquemaFamilia": "BRISTOL",
+    "Literals": [
+      "A",
+      "B",
+      "D",
+      "E",
+      "F"
+    ]
+  },
+  "AN": {
+    "Familia": "ANCLAJE",
+    "CodFamilia": "AN",
+    "EsquemaFamilia": "ANCLAJE",
+    "Literals": [
+      "A",
+      "D",
+      "F",
+      "J",
+      "L",
+      "Q"
+    ]
+  },
+  "ANS": {
+    "Familia": "ANCLAJEVS",
+    "CodFamilia": "ANS",
+    "EsquemaFamilia": "ANCLAJEVS",
+    "Literals": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "Q"
+    ]
+  },
+  "AV": {
+    "Familia": "AVELLANADONOHEX",
+    "CodFamilia": "AV",
+    "EsquemaFamilia": "AVELLANADONOHEX",
+    "Literals": [
+      "A",
+      "B",
+      "F",
+      "G"
+    ]
+  },
+  "NZ": {
+    "Familia": "NARIZ",
+    "CodFamilia": "NZ",
+    "EsquemaFamilia": "NARIZ",
+    "Literals": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "G"
+    ]
+  },
+  "PTS": {
+    "Familia": "12 PUNTAS",
+    "CodFamilia": "PTS",
+    "EsquemaFamilia": "12 PUNTAS",
+    "Literals": []
+  },
+  "ML": {
+    "Familia": "MEDIA LUNA",
+    "CodFamilia": "ML",
+    "EsquemaFamilia": "MEDIA LUNA",
+    "Literals": [
+      "A",
+      "B",
+      "C",
+      "E"
+    ]
+  },
+  "MTL": {
+    "Familia": "MARTILLO",
+    "CodFamilia": "MTL",
+    "EsquemaFamilia": "MARTILLO",
+    "Literals": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "G",
+      "H"
+    ]
+  },
+  "FT": {
+    "Familia": "FUTBOL",
+    "CodFamilia": "FT",
+    "EsquemaFamilia": "FUTBOL",
+    "Literals": [
+      "A",
+      "B",
+      "E",
+      "G",
+      "T"
+    ]
+  },
+  "FL": {
+    "Familia": "FLECHA",
+    "CodFamilia": "FL",
+    "EsquemaFamilia": "FLECHA",
+    "Literals": [
+      "A",
+      "B",
+      "C",
+      "E",
+      "G",
+      "H"
+    ]
+  },
+  "EC": {
+    "Familia": "ECLIPSA",
+    "CodFamilia": "EC",
+    "EsquemaFamilia": "ECLIPSA",
+    "Literals": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "G",
+      "H",
+      "J"
+    ]
+  },
+  "OJO": {
+    "Familia": "OJO",
+    "CodFamilia": "OJ",
+    "EsquemaFamilia": "OJO",
+    "Literals": [
+      "A",
+      "B",
+      "C",
+      "E"
+    ]
+  },
+  "BA": {
+    "Familia": "BANDA",
+    "CodFamilia": "BA",
+    "EsquemaFamilia": "BANDA",
+    "Literals": [
+      "A",
+      "B",
+      "C",
+      "F",
+      "H"
+    ]
+  },
+  "RN": {
+    "Familia": "RANURADO",
+    "CodFamilia": "RN",
+    "EsquemaFamilia": "RANURADO",
+    "Literals": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ]
+  },
+  "RU": {
+    "Familia": "RUPTURA",
+    "CodFamilia": "RU",
+    "EsquemaFamilia": "RUPTURA",
+    "Literals": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "J"
+    ]
+  },
+  "CA": {
+    "Familia": "CARJE",
+    "CodFamilia": "CA",
+    "EsquemaFamilia": "CARJE",
+    "Literals": [
+      "A",
+      "C",
+      "D",
+      "E"
+    ]
+  },
+  "TA": {
+    "Familia": "TAPÓN",
+    "CodFamilia": "TA",
+    "EsquemaFamilia": "TAPÓN",
+    "Literals": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ]
+  },
+  "TP": {
+    "Familia": "TRAPEZOIDAL",
+    "CodFamilia": "TP",
+    "EsquemaFamilia": "TRAPEZOIDAL",
+    "Literals": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G"
+    ]
+  },
+  "PD": {
+    "Familia": "PIRAMIDAL",
+    "CodFamilia": "PD",
+    "EsquemaFamilia": "PIRAMIDAL",
+    "Literals": [
+      "A",
+      "B",
+      "C",
+      "F"
+    ]
+  },
+  "PTN": {
+    "Familia": "PLATINAS",
+    "CodFamilia": "PTN",
+    "EsquemaFamilia": "PLATINAS",
+    "Literals": [
+      "A",
+      "B",
+      "C"
+    ]
+  },
+  "TB": {
+    "Familia": "PISO TABLILLA",
+    "CodFamilia": "TB",
+    "EsquemaFamilia": "PISO TABLILLA",
+    "Literals": [
+      "A",
+      "B",
+      "C"
+    ]
+  },
+  "CG": {
+    "Familia": "CUERPO CANGILONES",
+    "CodFamilia": "CG",
+    "EsquemaFamilia": "CUERPO CANGILONES",
+    "Literals": [
+      "A",
+      "B",
+      "C"
+    ]
+  },
+  "TR": {
+    "Familia": "TAPA RUEDA",
+    "CodFamilia": "TR",
+    "EsquemaFamilia": "TAPA RUEDA",
+    "Literals": [
+      "A",
+      "B",
+      "C"
+    ]
+  },
+  "TD": {
+    "Familia": "TAPAS DOBLADAS",
+    "CodFamilia": "TD",
+    "EsquemaFamilia": "TAPAS DOBLADAS",
+    "Literals": [
+      "A",
+      "B",
+      "C"
+    ]
+  },
+  "R8": {
+    "Familia": "RADIO8",
+    "CodFamilia": "R8",
+    "EsquemaFamilia": "RADIO8",
+    "Literals": [
+      "A",
+      "B",
+      "C"
+    ]
+  }
+}

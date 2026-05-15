@@ -10,8 +10,8 @@ import QRCode from "react-qr-code";
 import {useForm} from "react-hook-form";
 import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {HerramentalEsp} from "../Models/HerramentalEsp";
-
+import {HerramentalModelSchema} from "../Hooks/Validators/HerramentalEsp.js";
+import {useNavigate} from "react-router-dom";
 
 export default function CreateGnrl() {
 
@@ -105,45 +105,53 @@ export default function CreateGnrl() {
 
     useEffect(() => {
         CreatePost({
-            url: "api/post",
+            url: "/api/herramental_especifico/",
             method: "POST",
         });
     }, []);
     const [formHerr, setFormHerr] = useState("")
-    const {register, handleSubmit} = useForm({resolver: zodResolver(HerramentalEsp)});
+    const {
+        register,
+        handleSubmit,
+        formState: {errors}
+    } = useForm({
+        resolver: zodResolver(HerramentalModelSchema),
+    });
 
-    const submitData = (data: FormData) =>{
+    const submitData = async (data: FormData) =>{
         console.log("it worked", data)
-    }
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        reset();
+    };
     return (
-        <form onSubmit={handleSubmit(data => setFormHerr(data))}>
+        <>
             <NavBar/>
             <h1> Información General</h1>
-            <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-full m-5">
+            <form onSubmit={handleSubmit(submitData)} className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-full m-5">
                 <div>
                     <div>
                         <label className="block p-2">Tipo Herramental</label>
-                        <select onChange={handleHerramentalChange}>
-                            <option hidden> Seleccione Herramental</option>
-                            {herramentales?.map((item) => (
+                        <select {...register("he_NombreHerramental")} onChange={handleHerramentalChange}>                           <option hidden> Seleccione Herramental</option>
+                            {herramentales?.map((item:string) => (
                                 <option value={item.id} key={item.id}>{item.nombre}</option>
                             ))}
                         </select>
                     </div>
                     <div>
                         <label className="block p-2">Función Molde</label>
-                        <select onChange={handleTipoChange}>
+                        <select {...register("th_NombreTipoHerramental")} onChange={handleTipoChange}>
                             <option hidden> Seleccione Función Herramental</option>
-                            {tipo_herramental?.map((type) => (
+                            {tipo_herramental?.map((type:string) => (
                                 <option value={type.id} key={type.id}>{type.nombre}</option>
                             ))}
                         </select>
                     </div>
                     <div>
                         <label className="block p-2"> Familia Herramental</label>
-                        <select onChange={handleFamiliaChange}>
+                        <select {...register("fa_NombreFamilia")} onChange={handleFamiliaChange}>
                             <option hidden> Seleccione familia Herramental</option>
-                            {familias?.map((item) => (
+                            {familias?.map((item:string) => (
                                 <option value={item.id} key={item.id}>{item.nombre}</option>
                             ))}
                         </select>
@@ -183,12 +191,12 @@ export default function CreateGnrl() {
                     <button className="btn btn-orange col-start-1 row-start-2">Atrás</button>
                 </Link>
                 <Link to="/CreateMeasures">
-                    <button onClick={CreatePost("api/herramental_esp")}
+                    <button onClick={submitData}
                         className="btn btn-orange grid-col-2 row-start-2 sm:col-start-2 flex justify-end">Continuar
                     </button>
                 </Link>
 
             </form>
-        </form>
+        </>
     )
 }

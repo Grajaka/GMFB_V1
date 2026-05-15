@@ -1,95 +1,113 @@
 import '../styles/globals.css'
-//import SearchIcon from '@mui/icons-material/Search';
-//import MenuIcon from '@mui/icons-material/Menu';
 import Search from '../Components/Search.jsx';
-import {useId} from 'react';
-
-
+import { useId } from 'react';
+import { zodResolver } from "@hookform/resolvers/zod";
 import * as React from 'react';
-import useAxios from "../Hooks/useAxios/IndexAx.js";
-import {useEffect} from "react";
+import { useForm } from "react-hook-form";
+import { HerramentalModelSchema } from "../Hooks/Validators/HerramentalEsp.js";
+import { useHerramental } from '../Hooks/useAxios/useHerramental.js'
+
+
+// Seleccionamos solo lo necesario para el filtro
+const FilterFormSchema = HerramentalModelSchema.pick({
+    hesp_IdTipoHerramental: true,
+    hesp_IdFamilia: true,
+    hesp_IdMaquinaPP: true,
+    hesp_IdEstanteria: true,
+});
 
 export default function FilterForm() {
-    const [selectedFilters, setSelectedFilters] = React.useState([]);
-    const [search, setSearch] = React.useState('');
+    const { useGetLookups } = useHerramental();
     const selectId = useId();
 
-    const {response, error, loading, fetchData} = useAxios();
-    const urls = [
-        "/api/maquinas/",
-        "/api/herramental/",
-        "/api/estanterias/",
-        "api/estado_herramental/"
-    ];
-    useEffect(() => {
-        fetchData({
-            url: urls,
-            method: "GET",
-        });
-    }, []);
-    const [maquinas, herramental, estanterias,estado_herramental] = response || [[], [], [], []];
+    // 1. Obtenemos todos los datos usando el nuevo hook
+    const { tipos, familias, maquinas, estanterias } = useGetLookups();
 
-    //--------------------Debugging from console-------------------------------------
+    const { handleSubmit, setValue } = useForm({
+        resolver: zodResolver(FilterFormSchema),
+        defaultValues: {
+            hesp_IdTipoHerramental: 0,
+            hesp_IdFamilia: 0,
+            hesp_IdMaquinaPP: 0,
+            hesp_IdEstanteria: 0,
+        },
+    });
+    console.log("estanterias.data:", estanterias.data);
+    console.log("maquinas.data:", maquinas.data);
+    console.log("tipos.data:", tipos.data);
+    console.log("familias.data:", familias.data);
 
-    console.log("RESPONSE", response);
 
-    console.log("RESPONSE TYPE", typeof response);
-    console.log("IS ARRAY?", Array.isArray(response));
+    // 2. Estado de carga global (opcional)
+    const isLoading = tipos.isLoading || familias.isLoading || maquinas.isLoading || estanterias.isLoading;
 
+    const onSubmit = (data: any) => {
+        console.log("Filtros Aplicados:", data);
+
+    };
 
     return (
-        <form className="bg-orangeFB h-full hidden sm:block flex-col gap-3 px-5 py-6 shadow-3xl font-">
-            <Search md/>
-            <div>
-                <div>
-                    <label className="block p-2">Ubicación</label>
-                    <select>
-                        <option hidden>
-                            Estante
-                        </option>
-                        {estanterias?.map((estanteria) => (
-                            <option value={estanteria.es_NombreEstanteria}
-                                    key={estanteria.es_NombreEstanteria}>{estanteria.es_NombreEstanteria}</option>
-                        ))}
-                    </select>
-                </div>
+        <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="bg-orangeFB h-full hidden sm:block flex-col gap-3 px-5 py-6 shadow-3xl"
+        >
+            <Search />
 
-                <div>
-                    <label className=" block p-2">N° máquina PP</label>
-                    <select>
-                        <option hidden>N° máquina PP</option>
-                        {maquinas?.map((maquina) => (
-                            <option value={maquina.id} key={maquina.id}>{maquina.numero}</option>
-                        ))}
-                    </select>
-                </div>
+            {isLoading ? (
+                <p className="text-white text-xs animate-pulse">Cargando filtros...</p>
+            ) : (
+                <div className="flex flex-col gap-4">
+                    {/* Ubicación / Estanterías */}
+                    <div>
+                        <label className="block p-2 text-sm font-bold">Ubicación</label>
+                        <select onChange={(e) => setValue('hesp_IdEstanteria', Number(e.target.value))}>
+                            <option value="">Estante</option>
+                            {Array.isArray(estanterias.data) && estanterias.data.map((est: any) => (
+                                <option key={est.es_IdEstanteria} value={est.es_IdEstanteria}>
+                                    {est.es_NombreEstanteria}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
 
-                <div>
-                    <label>Tipo de molde</label>
-                    <select>
-                        <option hidden>Tipo Herramental</option>
-                        {herramental?.map((herramentales) => (
-                            <option value={herramentales.id} key={herramentales.id}>{herramentales.nombre}</option>
-                        ))}
-                    </select>
-                </div>
+                    {/* Máquinas */}
+                    <div>
+                        <label className="block p-2 text-sm font-bold">N° máquina PP</label>
+                        <select onChange={(e) => setValue('hesp_IdMaquinaPP', Number(e.target.value))}>
+                            <option value="">Seleccionar máquina</option>
+                            {Array.isArray(maquinas.data) && maquinas.data.map((maq: any) => (
+                                <option key={maq.id} value={maq.id}>
+                                    {maq.numero ?? `Máquina ${maq.id}`}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
 
-                <div>
-                    <label>Estado</label>
-                    <select className="">
-                        <option hidden> Disponibilidad</option>
-                        {estado_herramental?.map((estado) => (
-                            <option value={estado.id} key={estado.id}>{estado.nombre}</option>
-                        ))}
-                    </select>
-                </div>
+                    {/* Tipos de Herramental */}
+                    <div>
+                        <label className="block p-2 text-sm font-bold">Tipo de Herramental</label>
+                        <select onChange={(e) => setValue('hesp_IdTipoHerramental', Number(e.target.value))}>
+                            <option value="">Seleccionar tipo</option>
+                            {tipos.data?.map((tipo: any) => (
+                                <option key={tipo.th_IdTipoHerramental} value={tipo.th_IdTipoHerramental}>
+                                    {tipo.th_NombreTipoHerramental}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
 
-                <div className="flex items-center gap-8">
-                    <button className="btn btn-blue">Aplicar</button>
-                    <button className="btn btn-blue">Limpiar</button>
+                    <div className="flex items-center gap-4 mt-4">
+                        <button type="submit" className="btn btn-blue text-xs">Aplicar</button>
+                        <button
+                            type="button"
+                            onClick={() => window.location.reload()}
+                            className="btn btn-blue text-xs"
+                        >
+                            Limpiar
+                        </button>
+                    </div>
                 </div>
-            </div>
+            )}
         </form>
-
-    )
+    );
 }

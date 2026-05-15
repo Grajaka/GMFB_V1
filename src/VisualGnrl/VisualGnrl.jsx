@@ -4,7 +4,7 @@ import Switch from '@mui/material/Switch';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import {blue} from '@mui/material/colors';
 import Avatar from '@mui/material/Avatar';
-import FilterForm from './FilterForm.jsx';
+import FilterForm from './FilterForm.tsx';
 import Pagination from '../Components/Pagination.jsx';
 import {Link} from "react-router-dom";
 import NavBar from "../Components/NavBar.jsx";
@@ -56,7 +56,7 @@ export default function VisualGnrl() {
                     <FilterForm/>
                 </div>
                 <div className="ml-7 mt-0  ">
-                    <Link to="/CreateGnrl">
+                    <Link to="/CreateGnrlv1">
                         <button className="btn btn-blue">Nuevo molde</button>
                     </Link>
                     <MoldesList/>
