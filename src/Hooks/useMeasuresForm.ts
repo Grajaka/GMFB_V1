@@ -1,6 +1,6 @@
 // src/hooks/useFamiliaSchema.js
 
-import familiasSchema from '../data/familias.schema.json';
+import familiasSchema from '../assets/Schemas/familias.schema.json';
 
 const useFamiliaSchema = (codFamilia) => {
     if (!codFamilia || codFamilia === 'nan') {

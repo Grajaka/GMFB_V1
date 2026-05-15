@@ -9,6 +9,7 @@ import {Link} from "react-router-dom";
 import NavBar from "../Components/NavBar.jsx";
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import LoadingAnimation from "../Components/LoadingAnimation.jsx";
+import { useNavigate } from "react-router-dom";
 //***********************************************************
 
 import useAxios from "../Hooks/useAxios/IndexAx.js";
@@ -24,6 +25,9 @@ import {
     getSortedRowModel,
 } from '@tanstack/react-table';
 import Pagination from "@mui/material/Pagination";
+import {useForm} from "react-hook-form";
+import {yupResolver} from "@hookform/resolvers/yup";
+import {zodResolver} from "@hookform/resolvers/zod";
 
 /*
 const initialMoldes = [
@@ -70,10 +74,11 @@ export default function VisualGnrlv2() {
     const [globalFilter, setGlobalFilter] = useState('');
     const [sorting, setSorting] = useState([])
     const isLoading = status === FETCH_STATUS.LOADING;
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchData({
-            url: '/api/GnrlView', // Wait for backend to generate view
+            url: '/api/herramental_especifico/', // Wait for backend to generate view
             method: "GET",
         });
     }, []);
@@ -86,7 +91,7 @@ export default function VisualGnrlv2() {
         },
         {
             header: 'id',
-            accessorKey: 'id',
+            accessorKey: 'hesp_IdHerramentalEspecifico',
         },
         {
             header: 'name',
@@ -109,7 +114,7 @@ export default function VisualGnrlv2() {
 
     //DEBUGGING
 
-    fetch('http://10.1.1.14:8000/api/GnrlView')
+    fetch('http://10.1.1.14:8000/apiherramental_especifico/')
         .then(res => res.json())
         .then(data => console.log('API RESPONSE:', data))
         .catch(err => console.error('API ERROR:', err));
@@ -164,12 +169,11 @@ export default function VisualGnrlv2() {
 
                     <ul>
                         {table.getRowModel().rows.map((row) => (
-                            <Link key={row.id}
-                                  to="/VisualMold"
-                                  state={{id: row.original.id}}>
-                                <Molde
-                                    molde={row.original}/>
-                            </Link>
+                            navigate(`/VisualMold/${hesp_IdHerramentalEspecifico}`),
+                            key={row.hesp_IdHerramentalEspecifico},
+                            state={id: row.original.hesp_IdHerramentalEspecifico}>,
+                            <Molde
+                            molde={row.original}/>
                         ))}</ul>
 
                     {/* MUI PAGINATION INTEGRATION */}
