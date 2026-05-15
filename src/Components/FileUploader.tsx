@@ -5,6 +5,7 @@ import axios from "axios";
 
 export default function FileUploader({ uploadUrl, onUploadSuccess }) {
     const [previews, setPreviews] = useState([]);
+    const [uploadProgress, setUploadProgress] = useState(0);
 
     const onDrop = useCallback((acceptedFiles) => {
         const newPreviews = acceptedFiles.map(file => ({

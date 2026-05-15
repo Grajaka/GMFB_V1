@@ -1,8 +1,8 @@
 //Col 0-30
 //Row 0-7
 //Pos 0-21
-
-export default function DropDown ({length, start =0, value, onChange }) {
+import React, {forwardRef} from 'react';
+const DropDown ({length, start =0, value, onChange }) {
     const options = Array.from({length}, (_, i) => i + start);
 
     return (

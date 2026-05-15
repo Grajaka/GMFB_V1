@@ -4,8 +4,16 @@ import * as React from "react";
 import NavBar from "../Components/NavBar.jsx";
 import {Link} from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
+import {useFormData} from "../Hooks/FormNewHerrContext/HerrContext.js";
+import {useForm} from "react-hook-form";
+
+const finalData = {
+    ...FormData};
+
+console.log(finalData);
 
 export default function VisualMold() {
+    const ImgHerrUrlBase = "http://10.1.1.14/media/";
     const moldeID = "MES-RE19";
     return (
         <>
@@ -27,11 +35,11 @@ export default function VisualMold() {
             </div>
 
             <div className="col-start-1 row-start-2 ">
-                <h2>Estilo de Molde:</h2>
-                <h2>Tipo Molde Interior:</h2>
-                <h2>Forma Exterior Molde:</h2>
-                <h2>Semi-Elaborado:</h2>
-                <h2>Caraterísticas:</h2>
+                <h2>Categoria de Herramental:</h2>
+                <h2>Uso del Herramental:</h2>
+                <h2>Familia Herramental:</h2>
+                <h2>Código Alterno:</h2>
+                <h2>Descripción:</h2>
                 <h2>Copas:</h2>
                 <h2>Naríz : </h2>
                 <h2> Die-Set: 1005</h2>
@@ -89,7 +97,7 @@ export default function VisualMold() {
 
         <div className="col-start-2 row-start-2 justify-items-center">
             <h3>Esquema Familia Hex</h3>
-            <img className="col-start-1 row-start-2" alt="esquema" src="../assets/Schemas/SquemaBristol.png"/>
+            <img className="col-start-1 row-start-2" alt="esquema" src="http://10.1.1.14/media/esquemas/MARTILLO.png"/>
 
 
 
@@ -133,8 +141,12 @@ export default function VisualMold() {
                 imperdiet massa dis fames. Platea varius aptent a nisl, suspendisse cum phasellus fringilla
                 at, senectus ultricies fusce.</p>
 
-            <Link to="/VisualGnrl" className="">
-                <button className="btn btn-orange">Ver Plano</button>
+            <Link>
+
+                <button className="btn btn-orange m-2" onClick={()=>window.open('https://forjasbolivar.sharepoint.com/:x:/r/sites/POSEIDON/Planta/Forja/3.%20MONTAJES/ARAN%20M24%20CON%20BISEL%20-%20002162410A/ARAN%20M24%20CON%20BISEL%20-%20002162410A.xlsx?d=wd9ef2df94b3a417fa75ab0b33ff195a2&csf=1&web=1&e=7JpaIo', "blank")}>Ver Plano</button>
+            </Link>
+            <Link>
+                <button className="btn btn-orange m-2" onClick={()=>window.open('https://forjasbolivar.sharepoint.com/:x:/r/sites/POSEIDON/Planta/Forja/3.%20MONTAJES/ARAN%20M24%20CON%20BISEL%20-%20002162410A/ARAN%20M24%20CON%20BISEL%20-%20002162410A.xlsx?d=wd9ef2df94b3a417fa75ab0b33ff195a2&csf=1&web=1&e=7JpaIo', "blank")}>Ver Montaje</button>
             </Link>
         </div>
 

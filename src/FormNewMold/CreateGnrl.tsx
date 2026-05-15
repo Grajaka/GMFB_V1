@@ -9,6 +9,8 @@ import {useEffect, useState} from "react";
 import QRCode from "react-qr-code";
 import {useForm} from "react-hook-form";
 import {z} from "zod";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {HerramentalEsp} from "../Models/HerramentalEsp";
 
 
 export default function CreateGnrl() {
@@ -108,11 +110,13 @@ export default function CreateGnrl() {
         });
     }, []);
     const [formHerr, setFormHerr] = useState("")
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    const {register, handleSubmit} = useForm({resolver: zodResolver(HerramentalEsp)});
+
+    const submitData = (data: FormData) =>{
+        console.log("it worked", data)
     }
     return (
-        <>
+        <form onSubmit={handleSubmit(data => setFormHerr(data))}>
             <NavBar/>
             <h1> Información General</h1>
             <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-full m-5">
@@ -151,7 +155,7 @@ export default function CreateGnrl() {
                     <div className="space-y-4 md:col-start-2 ">
                         <div className="">
                             <label className="block p-2"> Código alterno</label>
-                            <input type="text" placeholder="Código alterno"
+                            <input type="text" placeholder="Código alterno" {...register("hesp_CodigoAlterno")}
                                    onChange={(e) => setAltern(e.target.value)}/>
                         </div>
                         <div>
@@ -185,6 +189,6 @@ export default function CreateGnrl() {
                 </Link>
 
             </form>
-        </>
+        </form>
     )
 }
