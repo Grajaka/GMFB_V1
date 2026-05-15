@@ -1,159 +1,211 @@
 import '../styles/globals.css'
-
 import * as React from "react";
 import NavBar from "../Components/NavBar.jsx";
-import {Link} from "react-router-dom";
-import Avatar from "@mui/material/Avatar";
-import {useFormData} from "../Hooks/FormNewHerrContext/HerrContext.js";
-import {useForm} from "react-hook-form";
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import useAxios from "../Hooks/useAxios/IndexAx.js";
+import familiasSchema from "../assets/Schemas/familias.schema.json";
 
-const finalData = {
-    ...FormData};
 
-console.log(finalData);
 
 export default function VisualMold() {
-    const ImgHerrUrlBase = "http://10.1.1.14/media/";
-    const moldeID = "MES-RE19";
+    const { id } = useParams();
+    const { fetchData } = useAxios();
+    const [toolData, setToolData] = useState<Record<string, any> | null>(null);
+    const [imageUrl, setImageUrl] = useState<string>("");
+    const ImgHerrUrlBase = "http://10.1.1.14/media/imagenes/";
+
+    useEffect(() => {
+        const loadData = async () => {
+            const resTool = await fetchData({ url: `/api/herramental_especifico/${id}/` });
+            if (resTool) {
+                setToolData(resTool);
+                if (resTool.hesp_IdImagen) {
+                    const resDoc = await fetchData({
+                        url: `http://10.1.1.14:8000/api/documents/${resTool.hesp_IdImagen}/`
+                    });
+                    if (resDoc && resDoc.archivo) {
+                        setImageUrl(`${ImgHerrUrlBase}${resDoc.archivo.split('/').pop()}`);
+                    }
+                }
+            }
+        };
+        if (id) loadData();
+    }, [id]);
+
+    const familyInfo = toolData ? familiasSchema[toolData.hesp_IdFamilia as keyof typeof familiasSchema] : null;
+
+    if (!toolData) return <div className="p-10 text-center">Cargando datos del herramental...</div>;
+
     return (
-        <>
-        <NavBar/>
+        <div className="bg-white min-h-screen font-['Poppins']">
+            <NavBar />
 
+            {/* Main Container */}
+            <div className="max-w-7xl mx-auto p-4 md:p-8">
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-auto grid-rows-[2,auto]  gap-5 w-scree h-screen m-15 font-[Poppins]">
-
-            <div className="col-start-1 row-start-1 font-bold ">
-                <h1>Hoja de vida molde {moldeID}</h1>
-                <Avatar
-                    alt={moldeID}
-                    src="src/assets/MoldesImg/420.jpg"
-                    sx={{width: 300, height: 500}}
-                    variant="rounded"
-                    className="col-start-1 row-start-1"
-
-                />
-            </div>
-
-            <div className="col-start-1 row-start-2 ">
-                <h2>Categoria de Herramental:</h2>
-                <h2>Uso del Herramental:</h2>
-                <h2>Familia Herramental:</h2>
-                <h2>Código Alterno:</h2>
-                <h2>Descripción:</h2>
-                <h2>Copas:</h2>
-                <h2>Naríz : </h2>
-                <h2> Die-Set: 1005</h2>
-                <h2>Tipo de máquina:</h2>
-                <h2> Maq. Principal: </h2>
-                <h2> N° Maq. Opcional: 26 </h2>
-
-
-                <Link to="/Orders" className="col-start-1 row-start-5">
-                    <button className="btn btn-orange ">Historial producción</button>
-                </Link>
-            </div>
-
-            <div className="col-start-2 row-start-1 gap-6 ">
-            <div className="grid grid-cols-2 grid-rows-[1/2fr,auto,auto] ">
-                <div className="col-span-2 row-start-1 flex flex-row items-center self-center">
-                    <Avatar
-                        alt={moldeID}
-                        src="src/assets/MoldesImg/QR420.png"
-                        sx={{width: 80, height: 80}}
-                        variant="rounded"
-                        className=""
-                    />
-                    <h1 className="text-orangeFB pl-2"> {moldeID}</h1>
+                {/* Header with Edit Button */}
+                <div className="flex justify-between items-center mb-6">
+                    <h1 className="text-2xl font-bold text-gray-800">
+                        Hoja de vida molde {toolData.hesp_CodigoHerramental}
+                    </h1>
+                    <button className={`orange text-white px-6 py-1 rounded shadow hover:opacity-90 transition`}>
+                        Editar
+                    </button>
                 </div>
 
-                    <div className="col-start-1 row-start-2">
-                        <h2> Ubicación Molde: </h2>
-                        <h2> Piso: 1</h2>
-                        <h2> Fila: 2</h2>
-                        <h2> Celda: 5</h2>
-                        <h2> Posición: 3</h2>
-                        <h2> Existencia: 1</h2>
+                {/* Main Content Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                    {/* COLUMN 1: Image & Technical List */}
+                    <div className="flex flex-col space-y-4">
+                        <img
+                            src={imageUrl || "./default-image.svg"}
+                            alt={toolData.hesp_CodigoHerramental}
+                            className="w-full aspect-[3/4] object-cover border border-gray-300 rounded"
+                        />
+
+
+                        <div className="text-sm border border-gray-200">
+                            <div className={`lightGrey p-3 space-y-1`}>
+                                <p><strong>N° Molde:</strong> {toolData.hesp_IdHerramentalEspecifico}</p>
+                                <p><strong>Codigo Alterno:</strong> {toolData.hesp_CodigoAlterno}</p>
+                                <p><strong>Tipo de Herramental:</strong>{toolData.nombre_tipo_herramental}</p>
+                                <p><strong>Familia:</strong> {toolData.nombre_familia}</p>
+                                <p><strong>Cantidad de Herramental:</strong> {toolData.hesp_CantHerramental}</p>
+                            </div>
+                            <div className="p-3 space-y-1">
+                                <p><strong>Máquinas compatibles</strong></p>
+                                <p><strong>N° Maq. Principal:</strong> {toolData.nombre_maquina_pp}</p>
+                                <p><strong>N° Maq. Opcional:</strong> {toolData.nombre_maquina_opc}</p>
+                                <p><strong>Die-Set:</strong> {toolData.codigo_dieset}</p>
+                            </div>
+                        </div>
+
+                        <button className={`orange} text-white py-2 px-4 rounded w-max mt-4 text-sm font-bold uppercase`}>
+                            Historial producción
+                        </button>
                     </div>
-                    <div className="col-start-2 row-start-2">
-                        <h2> Ubicación Die-Set: </h2>
-                        <h2> Piso: 1</h2>
-                        <h2> Fila: 2</h2>
-                        <h2> Celda: 5</h2>
-                        <h2> Posición: 3</h2>
-                        <h2> Existencia: 1</h2>
+
+                    {/* COLUMN 2: QR, Location & Schema */}
+                    <div className="space-y-6">
+                        {/* QR & ID Section */}
+                        <div className="flex items-center space-x-4">
+                            <div className="w-20 h-20 bg-gray-100 flex items-center justify-center border-2 border-black">
+                                <span className="text-[10px] text-center font-bold italic">QR CODE</span>
+                            </div>
+                            <h2 className={`text-4xl font-black orangeText`}>
+                                {toolData.hesp_CodigoHerramental}
+                            </h2>
+                        </div>
+
+                        {/* Location Sub-Grid */}
+                        <div className="grid grid-cols-2 gap-4 text-xs">
+                            <div className="space-y-1">
+                                <h4 className="font-bold border-b border-gray-300 pb-1">Ubicación Molde:</h4>
+                                <p><strong>Piso:</strong> {toolData.numero_piso}</p>
+                                <p><strong> Descripción: </strong> {toolData.descripcion_piso} </p>
+                                <p><strong>Estante:</strong> {toolData.nombre_estanteria}</p>
+                                <p><strong>Fila:</strong> {toolData.numero_fila}</p>
+                                <p><strong>Celda:</strong> {toolData.numero_columna}</p>
+                                <p><strong>Posición:</strong> {toolData.numero_posicion}</p>
+                                <p><strong>Existencia:</strong> 1</p>
+                            </div>
+                            <div className="space-y-1">
+                                <h4 className="font-bold border-b border-gray-300 pb-1">Ubicación Die-Set:</h4>
+                                <p><strong>Piso:</strong> 1</p>
+                                <p><strong>Estante:</strong> A</p>
+                                <p><strong>Fila:</strong> 2</p>
+                                <p><strong>Celda:</strong> 5</p>
+                                <p><strong>Posición:</strong> 3</p>
+                            </div>
+                        </div>
+
+                        <div className="text-sm">
+                            <p><strong>Estado Molde:</strong> {toolData.nombre_estado_Herr}</p>
+                            <div className="mt-4">
+                                <p className="font-bold">Actividad Pendiente: </p>
+                                <p className="ml-4 text-gray-600">{toolData.nombre_actividad}</p>
+                            </div>
+                        </div>
+
+                        {/* Technical Drawing Section */}
+                        <div className="pt-4 border-t border-gray-100">
+                            <h3 className={`font-bold orangeText mb-4 uppercase text-sm`}>
+                                Esquema Familia {familyInfo?.EsquemaFamilia || 'Hex'}
+                            </h3>
+                            <img
+                                src={`/assets/Schemas/${familyInfo?.EsquemaFamilia}.png`}
+                                alt="Esquema Técnico"
+                                className="w-full h-auto mb-4 border border-gray-100 p-2"
+                            />
+
+                            {/* Literals / Dimensions boxes */}
+                            <div className="mt-4">
+                                <h4 className="text-xs font-bold mb-2">Dimensiones:</h4>
+                                <div className="flex flex-wrap gap-2">
+                                    {familyInfo?.Literals.map((lit: string) => (
+                                        <div key={lit} className="border-2 border-orange-400 px-4 py-2 min-w-[60px] text-center rounded">
+                                            <span className="block text-[10px] uppercase font-bold text-gray-500">{lit}</span>
+                                            <span className="text-lg font-bold">{toolData[`hesp_${lit}`] || '0'}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* COLUMN 3: Mechanical Specs & Observations */}
+                    <div className="flex flex-col">
+                        {/* Mechanical Specs Card */}
+                        <div className={`darkGrey text-white p-6 rounded-sm flex-grow relative`}>
+                            <h3 className={`font-bold text-lg mb-6 orangeText uppercase`}>
+                                Características Mecánicas
+                            </h3>
+
+                            <div className="space-y-6">
+                                <div className="flex items-start space-x-3">
+                                    <div className={`p-2 rounded orange`}>
+                                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    </div>
+                                    <div>
+                                        <p className="text-xs font-bold text-gray-300">Fecha de elaboración:</p>
+                                        <p>05/06/1998</p>
+                                        <p className="text-xs font-bold text-gray-300 mt-1">Material:</p>
+                                        <p>AI6</p>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-start space-x-3">
+                                    <div className={`p-2 rounded orange`}>
+                                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.5-7 3 10 13 11 13 11z"></path></svg>
+                                    </div>
+                                    <div>
+                                        <p className="text-xs font-bold text-gray-300">Tratamiento térmico:</p>
+                                        <div className="mt-2 space-y-1">
+                                            <div className="h-2 w-24 bg-gray-500 rounded"></div>
+                                            <div className="h-2 w-32 bg-gray-500 rounded"></div>
+                                            <div className="h-2 w-20 bg-gray-500 rounded"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="mt-10">
+                                    <h4 className="text-sm font-bold border-b border-gray-500 pb-1 mb-2">Observaciones:</h4>
+                                    <p className="text-xs text-gray-300 leading-relaxed italic">
+                                        {toolData.hesp_Observacion || "Sin observaciones adicionales registradas en el sistema."}
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* Plan View Button - Positioned at bottom right of card */}
+                            <button className={`orange text-white py-2 px-6 rounded absolute bottom-4 right-4 text-sm font-bold shadow-lg`}>
+                                Ver plano
+                            </button>
+                        </div>
                     </div>
                 </div>
-                <div className=" col-span-2 row-start-3 pt-2">
-                    <h2>Estado Actual Molde: </h2>
-                    <h2>Actividad pendiente: </h2>
-                    <ol className="list-decimal list-inside p-2">
-                        <li>Actividad 1</li>
-                    </ol>
-                </div>
-            </div>
-
-
-
-
-        <div className="col-start-2 row-start-2 justify-items-center">
-            <h3>Esquema Familia Hex</h3>
-            <img className="col-start-1 row-start-2" alt="esquema" src="http://10.1.1.14/media/esquemas/MARTILLO.png"/>
-
-
-
-            <h2>Dimensiones</h2>
-            <div className="flex justify-around  space-x-8 p-2">
-                <span className="dimensions-card">A:</span>
-                <span className="dimensions-card">B:</span>
-                <span className="dimensions-card">C:</span>
-                <span className="dimensions-card">D:</span>
-                <span className="dimensions-card">H-Cono:</span>
-                <span className="dimensions-card">H-Pestaña:</span>
-                <span className="dimensions-card">Nariz:</span>
-                <div/>
-
-
             </div>
         </div>
-
-        <div className="col-start-3 row-start-1">
-            <Link to="/CreateGnrl" className="justify-self-end">
-                <button className="btn btn-orange ">Editar</button>
-            </Link>
-
-            <div className="card-Mechanics ">
-                <h3>Características Mecánicas</h3>
-                <span>Fecha de elaboración: </span>
-                <span>Material: </span>
-                <span>Tratamiento térmico: </span>
-                <p >Lorem ipsum dolor sit amet consectetur adipiscing elit suscipit eget, neque vulputate laoreet
-                    hac proin vestibulum duis dictumst scelerisque lacinia, conubia sociis est bibendum
-                    imperdiet massa dis fames. .</p>
-
-            </div>
-        </div>
-
-        <div className="col-start-3 row-start-2">
-
-            <h3>Observaciones:</h3>
-            <p className="w-100 h-auto">Lorem ipsum dolor sit amet consectetur adipiscing elit suscipit eget, neque vulputate laoreet
-                hac proin vestibulum duis dictumst scelerisque lacinia, conubia sociis est bibendum
-                imperdiet massa dis fames. Platea varius aptent a nisl, suspendisse cum phasellus fringilla
-                at, senectus ultricies fusce.</p>
-
-            <Link>
-
-                <button className="btn btn-orange m-2" onClick={()=>window.open('https://forjasbolivar.sharepoint.com/:x:/r/sites/POSEIDON/Planta/Forja/3.%20MONTAJES/ARAN%20M24%20CON%20BISEL%20-%20002162410A/ARAN%20M24%20CON%20BISEL%20-%20002162410A.xlsx?d=wd9ef2df94b3a417fa75ab0b33ff195a2&csf=1&web=1&e=7JpaIo', "blank")}>Ver Plano</button>
-            </Link>
-            <Link>
-                <button className="btn btn-orange m-2" onClick={()=>window.open('https://forjasbolivar.sharepoint.com/:x:/r/sites/POSEIDON/Planta/Forja/3.%20MONTAJES/ARAN%20M24%20CON%20BISEL%20-%20002162410A/ARAN%20M24%20CON%20BISEL%20-%20002162410A.xlsx?d=wd9ef2df94b3a417fa75ab0b33ff195a2&csf=1&web=1&e=7JpaIo', "blank")}>Ver Montaje</button>
-            </Link>
-        </div>
-
-
-        </div>
-
-
-</>
-)
+    );
 }

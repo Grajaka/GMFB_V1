@@ -4,7 +4,7 @@ import Switch from '@mui/material/Switch';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import {blue} from '@mui/material/colors';
 import Avatar from '@mui/material/Avatar';
-import FilterForm from './FilterForm.jsx';
+import FilterForm from './FilterForm.js';
 import {Link} from "react-router-dom";
 import NavBar from "../Components/NavBar.jsx";
 import ChecklistIcon from '@mui/icons-material/Checklist';
@@ -78,7 +78,7 @@ export default function VisualGnrlv2() {
 
     useEffect(() => {
         fetchData({
-            url: '/api/herramental_especifico/', // Wait for backend to generate view
+            url: '/api/herramental_especifico/${id}/',
             method: "GET",
         });
     }, []);
@@ -95,7 +95,7 @@ export default function VisualGnrlv2() {
         },
         {
             header: 'name',
-            accessorKey: 'name',
+            accessorKey: 'hesp_CodigoHerramental',
         },
         {
             header: 'image',
@@ -107,14 +107,14 @@ export default function VisualGnrlv2() {
         },
         {
             header: 'state',
-            accessorKey: 'state',
+            accessorKey: '"hesp_IdEstadoHerr"',
         },
 
     ], []);
 
     //DEBUGGING
 
-    fetch('http://10.1.1.14:8000/apiherramental_especifico/')
+    fetch('http://10.1.1.14:8000/api/herramental_especifico/')
         .then(res => res.json())
         .then(data => console.log('API RESPONSE:', data))
         .catch(err => console.error('API ERROR:', err));
@@ -168,13 +168,16 @@ export default function VisualGnrlv2() {
                     {/* RENDER THE LIST USING TANSTACK ROW MODEL */}
 
                     <ul>
-                        {table.getRowModel().rows.map((row) => (
-                            navigate(`/VisualMold/${hesp_IdHerramentalEspecifico}`),
-                            key={row.hesp_IdHerramentalEspecifico},
-                            state={id: row.original.hesp_IdHerramentalEspecifico}>,
-                            <Molde
-                            molde={row.original}/>
-                        ))}</ul>
+                        {/*{table.getRowModel().rows.map((row) => (
+                            // <Molde
+                            //     navigate(`/VisualMold/${hesp_IdHerramentalEspecifico}`),
+                            //     molde={row.original}/>
+
+                            // key={row},
+                            // state={id: row.original.hesp_IdHerramentalEspecifico},
+
+                       // ))} */}
+                        </ul>
 
                     {/* MUI PAGINATION INTEGRATION */}
 
@@ -195,8 +198,6 @@ export default function VisualGnrlv2() {
         </>
     )
 }
-
-
 
 
 

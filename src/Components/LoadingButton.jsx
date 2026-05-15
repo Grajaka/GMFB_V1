@@ -6,7 +6,7 @@ export default function LoadingButton() {
 
     return (
 
-        <button className="btn-blue" disabled={isLoading}>
+        <button type="submit" className="btn btn-orange" disabled={isLoading}>
             {isLoading ? "Guardando..." : "Guardar"}
         </button>
 
