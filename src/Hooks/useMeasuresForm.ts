@@ -23,11 +23,11 @@ export const useMeasuresForm = (familyCode: string | undefined)=> {
         mode: "onChange"
     });
 
-    const assetBaseUrl = "http://10.1.1.14/media/esquemas";
+    const assetBaseUrl = "http://10.1.1.14/media/esquemas/";
     return {
         ...methods,
         literals:familyData.Literals,
-        schemeUrl: `${assetBaseUrl}/${familyData.EsquemaFamilia}.png`,
+        schemeUrl: `${assetBaseUrl}${familyData.EsquemaFamilia}.png`,
         familyName: familyData.Familia,
     };
 
