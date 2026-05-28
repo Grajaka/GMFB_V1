@@ -21,6 +21,8 @@ type DropdownItem = {
     pi_DescripcionPiso?: string;
     di_IdDieSet?: number;
     di_CodigoDieSet?: number | string;
+    eh_IdEstadoHerr?: number;
+    eh_NombreEstado?: string;
 };
 
 type FormValues = z.infer<typeof UbicacionHerramentalSchema>;
@@ -28,14 +30,20 @@ type FormValues = z.infer<typeof UbicacionHerramentalSchema>;
 export function CreateUbic() {
     const { formData, updateFormData, clearForm } = useFormData();
     const navigate = useNavigate();
-    const { response, fetchData, CreatePost, status } = useAxios();
+    const { response, fetchData, CreatePost } = useAxios();
+
+
 
     const [maquinas, setMaquinas] = useState<DropdownItem[]>([]);
+    console.log("maquina sample:", response[0]?.[0]);
     const [pisos, setPisos] = useState<DropdownItem[]>([]);
     const [estanterias, setEstanterias] = useState<DropdownItem[]>([]);
     const [estados, setEstados] = useState<DropdownItem[]>([]);
     const [actividades, setActividades] = useState<DropdownItem[]>([]);
+    console.log("actividad sample:", response[1]?.[0]);
     const [diesets, setDiesets] = useState<DropdownItem[]>([]);
+
+    //const [maquinas, pisos, estanterias, actividades, diesets] = response || [[], [], [], [], []];
 
     const {
         register,
@@ -53,7 +61,8 @@ export function CreateUbic() {
             hesp_CantHerramental: 0,
             hesp_Observacion: "",
             hesp_IdActividad: 0,
-            hesp_IdEstadoHerr: 0,
+            eh_IdEstadoHerr: 0,
+            eh_NombreEstado: "",
             hesp_IdDieSet: 0,
             hesp_IdEstanteria: 0,
             es_IdEstanteria: 0,
@@ -72,24 +81,31 @@ export function CreateUbic() {
                 "/api/actividades/",
                 "/api/estanterias/",
                 "/api/pisos/",
-                //"/api/estado_herramental/",
-                "/api/diesets/",
+                "/api/estado_herramental/",
+                //"/api/diesets/",
             ];
 
             const results = await fetchData({ url: urls });
 
             if (results && Array.isArray(results)) {
-                setMaquinas(results[0]);
-                setActividades(results[1] ?? []);
-                setEstanterias(results[2] ?? []);
-                setPisos(results[3] ?? []);
-                //setEstados(results[4] ?? []);
-                setDiesets(results[5] ?? []);
+                const getData = (res: any) => {
+                    if (!res) return [];
+                    if (Array.isArray(res)) return res;
+                    if (res?.results && Array.isArray(res.results)) return res.results;
+                    return [];
+                };
+
+                setMaquinas(getData(results[0]));
+                setActividades(getData(results[1]));
+                setEstanterias(getData(results[2]));
+                setPisos(getData(results[3]));
+                setEstados(getData(results[4]));
+                //setDiesets(getData(results[4]));
             }
         };
 
         loadDropdownData();
-    }, [fetchData]);
+    }, []);
 
     const onFinalSubmit: import("react-hook-form").SubmitHandler<FormValues> = async (data) => {
         try {
@@ -182,7 +198,7 @@ export function CreateUbic() {
                             <label className="block p-2">N° máquina PP</label>
                             <select {...register("hesp_IdMaquinaPP")}>
                                 <option value="" hidden>N° máquina PP</option>
-                                {maquinas.map((maquina, index) => (
+                                {maquinas?.map((maquina, index) => (
                                     <option value={maquina.id ?? index} key={maquina.id ?? index}>
                                         {maquina.numero ?? ""}</option>
                                 ))}
@@ -193,9 +209,9 @@ export function CreateUbic() {
                             <label className="block p-2">N° máquina Opc</label>
                             <select {...register("hesp_IdMaquinaOpc")}>
                                 <option value="" hidden>N° máquina Opc</option>
-                                {maquinas.map((maquina, index) => (
-                                    <option value={maquina.id} key={maquina.id}>
-                                        {maquina.numero}
+                                {maquinas?.map((maquina, index) => (
+                                    <option value={maquina.id ?? index} key={maquina.id ?? index}>
+                                        {maquina.numero ?? ""}
                                     </option>
                                 ))}
                             </select>
@@ -219,7 +235,7 @@ export function CreateUbic() {
                             <label className="block p-2">Estante</label>
                             <select {...register("hesp_IdEstanteria")}>
                                 <option value="" hidden>Estante</option>
-                                {estanterias.map((estante, index) => (
+                                {estanterias?.map((estante, index) => (
                                     <option value={estante.es_IdEstanteria ?? index} key={estante.es_IdEstanteria ?? index}>
                                         {estante.es_NombreEstanteria ?? ""}
                                     </option>
@@ -242,38 +258,38 @@ export function CreateUbic() {
                             <DropDown length={22} start={0} {...register("uh_NumeroPosicion")} />
                         </div>
 
-                        <div className="col-start-1 row-start-3">
+                        {/* <div className="col-start-1 row-start-3">
                             <label className="block p-2">DieSet</label>
                             <select {...register("hesp_IdDieSet")}>
                                 <option value="" hidden>DieSet</option>
-                                {diesets.map((dieSet, index) => (
+                                {diesets?.map((dieSet, index) => (
                                     <option value={dieSet.di_IdDieSet ?? index} key={dieSet.di_IdDieSet ?? index}>
                                         {dieSet.di_CodigoDieSet ?? ""}
                                     </option>
                                 ))}
                             </select>
 
-                        </div>
+                        </div> */}
                     </div>
 
                     <div className="grid p-2 col-span-2 row-start-3 card-form">
-                        {/*<div className="col-start-1 row-start-1">
+                        <div className="col-start-1 row-start-1">
                             <label className="">Estado</label>
-                            <select {...register("hesp_IdEstadoHerr")}>
+                            <select {...register("eh_IdEstadoHerr")}>
                                 <option value="" hidden>Estado</option>
                                 {estados.map((estado, index) => (
-                                    <option value={estado.id ?? index} key={estado.id ?? index}>
-                                        {estado.nombre ?? ""}
+                                    <option value={estado.eh_IdEstadoHerr ?? index} key={estado.eh_IdEstadoHerr ?? index}>
+                                        {estado.eh_NombreEstado ?? ""}
                                     </option>
                                 ))}
                             </select>
-                        </div>*/}
+                        </div>
 
                         <div className="col-start-2 row-start-1">
                             <label className="block p-2">Actividad Pendiente</label>
                             <select {...register("hesp_IdActividad")}>
                                 <option value="" hidden>Actividad Pendiente</option>
-                                {actividades.map((actividad, index) => (
+                                {actividades?.map((actividad, index) => (
                                     <option value={actividad.id ?? index} key={actividad.id ?? index}>
                                         {actividad.nombre ?? ""}
                                     </option>

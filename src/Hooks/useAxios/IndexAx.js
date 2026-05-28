@@ -1,6 +1,7 @@
 import axios from 'axios';
-import {useEffect, useState, useRef} from 'react';
-import {FETCH_STATUS} from "./FetchStatus.js";
+import { useEffect, useState, useRef } from 'react';
+import { FETCH_STATUS } from "./FetchStatus.js";
+import { useCallback } from 'react';
 
 const useAxios = () => {
     const [response, setResponse] = useState([]);
@@ -32,9 +33,7 @@ const useAxios = () => {
 
     useEffect(() => {
         // Cleanup function to abort on unmount
-        return () => {
-            controllerRef.current?.abort();
-        };
+        return () => controllerRef.current?.abort();
     }, []);
 
     const CreatePost = async (url, method = "POST", data, config = {}) => {
@@ -57,7 +56,8 @@ const useAxios = () => {
             throw errorData;
         } finally {
             setLoading(false);
-        }}
+        }
+    }
 
 
 
@@ -75,7 +75,7 @@ const useAxios = () => {
 
     }
 
-    const fetchData = async (args) => {
+    const fetchData = useCallback(async (args) => {
         const { url, method = "GET", data = null, params = null } =
             typeof args === 'string' ? { url: args } : args;
         setLoading(true);
@@ -102,7 +102,7 @@ const useAxios = () => {
                 setResponse(dataResult);
                 return dataResult;
 
-            }else {
+            } else {
                 const result = await axiosInstance({
                     url,
                     method,
@@ -116,7 +116,7 @@ const useAxios = () => {
             }
 
         } catch (error) {
-            if(!axios.isCancel(error)){
+            if (!axios.isCancel(error)) {
                 setError(error.response ? error.response.data : error.message);
                 setStatus(FETCH_STATUS.ERROR);
                 console.error('Request error', error.message)
@@ -125,7 +125,7 @@ const useAxios = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
     return {
         response,
         loading,

@@ -1,8 +1,8 @@
-import {z} from "zod"
+import { z } from "zod"
 
 export const HerramentalModelSchema = z.object({
     id: z.number().int().optional(),
-    nombre:z.string().max(100),
+    nombre: z.string().max(100),
     codigo: z.string().max(10),
     i: z.number().int().optional(),
     consecutive: z.number(),
@@ -42,7 +42,7 @@ export const HerramentalModelSchema = z.object({
     he_CodigoHerramental: z.string().max(10),
 
     // Herramental Type
-    th_IdTipoHerramental: z.coerce.number().min(1, "Debe seleccionar un tipo"),    th_NombreTipoHerramental: z.string().max(15),
+    th_IdTipoHerramental: z.coerce.number().min(1, "Debe seleccionar un tipo"), th_NombreTipoHerramental: z.string().max(15),
     th_CodigoTipoHerramental: z.string().max(4),
 
     //Family
@@ -77,7 +77,7 @@ export const PageMeasuresSchema = HerramentalModelSchema.pick({
     hesp_D: true,
     hesp_E: true,
     hesp_Observacion: true,
-    hesp_Descripcion1:true,
+    hesp_Descripcion1: true,
 
 });
 
