@@ -1,16 +1,16 @@
 import '../styles/globals.css'
 import * as React from "react";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import NavBar from "../Components/NavBar.jsx";
 import useAxios from "../Hooks/useAxios/IndexAx.js";
-import {useEffect, useMemo} from "react";
+import { useEffect, useMemo } from "react";
 import QRCode from "react-qr-code";
-import {useForm} from "react-hook-form";
-import {zodResolver} from "@hookform/resolvers/zod";
-import {HerramentalModelSchema} from "../Hooks/Validators/HerramentalEsp.js";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { HerramentalModelSchema } from "../Hooks/Validators/HerramentalEsp.js";
 import LoadingAnimation from "../Components/LoadingAnimation.jsx";
-import {useFormData} from "../Hooks/FormNewHerrContext/HerrContext.js";
-import {z} from "zod";
+import { useFormData } from "../Hooks/FormNewHerrContext/HerrContext.js";
+import { z } from "zod";
 
 //pick Validator variables in this form
 const HerramentalValuesSchema = HerramentalModelSchema.pick(
@@ -37,9 +37,9 @@ interface HerramentalItem {
 }
 
 export default function CreateGnrlv1() {
-    const {updateFormData} = useFormData();
+    const { updateFormData } = useFormData();
     const navigate = useNavigate();
-    const {response, loading, fetchData} = useAxios();
+    const { response, loading, fetchData } = useAxios();
 
 
 
@@ -51,22 +51,22 @@ export default function CreateGnrlv1() {
         handleSubmit,
         watch,
         setValue,
-        formState: {errors} //review-----------------
-    }=useForm({
+        formState: { errors } //review-----------------
+    } = useForm({
         resolver: zodResolver(HerramentalValuesSchema),
         defaultValues: {
             hesp_IdHerramental: 0,
             he_IdHerramental: 0,
             th_IdTipoHerramental: 0,
-            fa_IdFamilia: "",
+            fa_IdFamilia: 0,
             hesp_CodigoAlterno: "",
             consecutive: 0,
             hesp_CodigoHerramental: "",
             hesp_Descripcion1: "",
-            hesp_IdFamilia:0,
-            hesp_IdTipoHerramental:0,
-            fa_NombreFamilia:"",
-            fa_CodigoFamilia:"",
+            hesp_IdFamilia: 0,
+            hesp_IdTipoHerramental: 0,
+            fa_NombreFamilia: "",
+            fa_CodigoFamilia: "",
         }
     });
 
@@ -75,8 +75,8 @@ export default function CreateGnrlv1() {
 
     //watch fields to update Description and Qr code automatically
 
-// Watch the IDs
-// 1. Destructure the watched fields as an object
+    // Watch the IDs
+    // 1. Destructure the watched fields as an object
     const watched = watch();
     const {
         he_IdHerramental,
@@ -84,7 +84,7 @@ export default function CreateGnrlv1() {
         fa_IdFamilia,
         hesp_CodigoAlterno,
         fa_CodigoFamilia,
-        consecutive} = watched;
+        consecutive } = watched;
 
 
 
@@ -106,9 +106,9 @@ export default function CreateGnrlv1() {
 
     //Memoize the description so it only recalculates when watched fields change
 
-    const description = useMemo(() =>{
+    const description = useMemo(() => {
 
-// Find the object in your original response arrays
+        // Find the object in your original response arrays
         const hName =
             herramentales?.find(
                 (i) => i.he_IdHerramental === Number(he_IdHerramental)
@@ -173,18 +173,18 @@ export default function CreateGnrlv1() {
                 url: [
                     "/api/tipo_herramental/",
                     "/api/familia/",
-                    "api/herramental/"
+                    "/api/herramental/"
                 ],
                 method: "GET",
             });
         }, []); //Empty array means Run the code once when page Loads
     //On mount, it fetches data from 3 endpoints in parallel. The results are destructured from the response array.
 
-/*    //Handle Logical Navigation
-    const onSubmit = (data:z.infer<typeof HerramentalValuesSchema>) =>{
-        console.log("it worked", data)
-        navigate("/CreateMeasures");
-        };*/
+    /*    //Handle Logical Navigation
+        const onSubmit = (data:z.infer<typeof HerramentalValuesSchema>) =>{
+            console.log("it worked", data)
+            navigate("/CreateMeasures");
+            };*/
 
     // Define your onNextPage function
     const onNextPage = (data: z.infer<typeof HerramentalValuesSchema>) => {
@@ -195,7 +195,7 @@ export default function CreateGnrlv1() {
 
 
 
-    if (loading) return <LoadingAnimation/>;
+    if (loading) return <LoadingAnimation />;
 
     return (
         <>
@@ -210,7 +210,7 @@ export default function CreateGnrlv1() {
                         <label className="block p-2" htmlFor="NombreHerramental"> Categoria Herramental</label>
                         <select {...register("he_IdHerramental")} className="w-full p-2 border round ed">
                             <option value=""> Seleccione Herramental</option>
-                            {herramentales?.map((item:number) => (
+                            {herramentales?.map((item: number) => (
                                 <option value={item.he_IdHerramental} key={item.he_IdHerramental}>{item.he_NombreHerramental}</option>
                             ))}
                         </select>
@@ -221,7 +221,7 @@ export default function CreateGnrlv1() {
                         <label htmlFor={"NombreTipoHerramental"} className="block p-2">Uso del Herramental</label>
                         <select {...register("th_IdTipoHerramental")} className="w-full p-2 border round ed">
                             <option value=""> Seleccione tipo de uso </option>
-                            {tipo_herramental?.map((typeh:number)=>(
+                            {tipo_herramental?.map((typeh: number) => (
                                 <option value={typeh.th_IdTipoHerramental} key={typeh.th_IdTipoHerramental}>{typeh.th_NombreTipoHerramental}</option>
                             ))}
                         </select>
@@ -232,7 +232,7 @@ export default function CreateGnrlv1() {
                         <label className="block p-2" htmlFor={"NombreFamilia"} >Familia Herramental</label>
                         <select {...register("fa_IdFamilia")} className="w-full p-2 border">
                             <option value="">Seleccione Familia</option>
-                            {familias?.map((item:number)=>(
+                            {familias?.map((item: number) => (
                                 <option value={item.fa_IdFamilia} key={item.fa_IdFamilia}>{item.fa_NombreFamilia}</option>
                             ))}
                         </select>
@@ -243,10 +243,10 @@ export default function CreateGnrlv1() {
                     <div>
                         <label className="block p-2" htmlFor={"CodigoAlterno"}> Código alterno</label>
                         <input
-                        type="text"
+                            type="text"
                             {...register("hesp_CodigoAlterno")}
-                                className="block p-2 border"
-                            />
+                            className="block p-2 border"
+                        />
                         {errors.hesp_CodigoAlterno && <p className="text-red-500 text-sm">{errors.hesp_CodigoAlterno.message}</p>}
 
                     </div>
@@ -266,13 +266,13 @@ export default function CreateGnrlv1() {
                     <h4 className="font-bold"> Código Estándar</h4  >
                     <div>
                         <p className="uppercase m-0 text-2xl text-blueFB"> {HerramentalCode}</p>
-                        <input type={"hidden"} {...register("hesp_CodigoHerramental")} value={HerramentalCode}/>
+                        <input type={"hidden"} {...register("hesp_CodigoHerramental")} value={HerramentalCode} />
                         <input
                             type="number"
-                            {...register("consecutive", {valueAsNumber: true})}
+                            {...register("consecutive", { valueAsNumber: true })}
                             className="block p-2 border"
                         />
-                        {errors.consecutive&& <p className="text-red-500 text-sm">{errors.consecutive.message}</p>}
+                        {errors.consecutive && <p className="text-red-500 text-sm">{errors.consecutive.message}</p>}
 
                     </div>
 
