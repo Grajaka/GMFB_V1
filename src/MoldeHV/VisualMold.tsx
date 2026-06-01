@@ -4,7 +4,8 @@ import NavBar from "../Components/NavBar.jsx";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import useAxios from "../Hooks/useAxios/IndexAx.js";
-import familiasSchema from "../assets/Schemas/familias.schema.json";
+import familiasSchema from "../assets/Schemas/familias.schema.json" with { type: "json" };
+import QRCode from "react-qr-code";
 
 
 
@@ -13,7 +14,8 @@ export default function VisualMold() {
     const { fetchData } = useAxios();
     const [toolData, setToolData] = useState<Record<string, any> | null>(null);
     const [imageUrl, setImageUrl] = useState<string>("");
-    const ImgHerrUrlBase = "http://10.1.1.14/media/imagenes/";
+    // const ImgHerrUrlBase = "http://10.1.1.14/media/imagenes/"; ------------------------------
+    const ImgHerrUrlBase = import.meta.env.VITE_MEDIA_URL || "http://localhost:8000/media/imagenes/";
 
     useEffect(() => {
         const loadData = async () => {
@@ -22,7 +24,8 @@ export default function VisualMold() {
                 setToolData(resTool);
                 if (resTool.hesp_IdImagen) {
                     const resDoc = await fetchData({
-                        url: `http://10.1.1.14:8000/api/documents/${resTool.hesp_IdImagen}/`
+                        //url: `http://10.1.1.14:8000/api/documents/${resTool.hesp_IdImagen}/`
+                        url: `/api/documents/${resTool.hesp_IdImagen}/` //-------------------------------------------------------------------------------------
                     });
                     if (resDoc && resDoc.archivo) {
                         setImageUrl(`${ImgHerrUrlBase}${resDoc.archivo.split('/').pop()}`);
@@ -35,6 +38,20 @@ export default function VisualMold() {
 
     const familyInfo = toolData ? familiasSchema[toolData.hesp_IdFamilia as keyof typeof familiasSchema] : null;
 
+    const qrCodeValue = toolData
+        ? [
+            `Codigo herramental: ${toolData.hesp_CodigoHerramental || ""}`,
+            `código alterno: ${toolData.hesp_CodigoAlterno || ""}`,
+            `CantHerramental: ${toolData.hesp_CantHerramental || ""}`,
+            `Maq. principal: ${toolData.nombre_maquina_pp || ""}`,
+            `maq. Opcional: ${toolData.nombre_maquina_opc || ""}`,
+            `DieSet: ${toolData.codigo_dieset || ""}`,
+            `Ubicación Molde: Piso ${toolData.numero_piso || ""}, Estante ${toolData.nombre_estanteria || ""}, Fila ${toolData.numero_fila || ""}, Celda ${toolData.numero_columna || ""}, Posición ${toolData.numero_posicion || ""}`,
+            `EstadoMolde: ${toolData.nombre_estado_Herr || ""}`,
+            `hesp_Descripcion1: ${toolData.hesp_Descripcion1 || ""}`
+        ].join("\n")
+        : "";
+
     if (!toolData) return <div className="p-10 text-center">Cargando datos del herramental...</div>;
 
     return (
@@ -46,10 +63,10 @@ export default function VisualMold() {
 
                 {/* Header with Edit Button */}
                 <div className="flex justify-between items-center mb-6">
-                    <h1 className="text-2xl font-bold text-gray-800">
+                    <h1 className="text-2xl font-bold">
                         Hoja de vida molde {toolData.hesp_CodigoHerramental}
                     </h1>
-                    <button className={`orange text-white px-6 py-1 rounded shadow hover:opacity-90 transition`}>
+                    <button className="btn btn-orange" onClick={() => navigate(`/EditGeneral/${id}`)}>
                         Editar
                     </button>
                 </div>
@@ -91,10 +108,14 @@ export default function VisualMold() {
                     <div className="space-y-6">
                         {/* QR & ID Section */}
                         <div className="flex items-center space-x-4">
-                            <div className="w-20 h-20 bg-gray-100 flex items-center justify-center border-2 border-black">
-                                <span className="text-[10px] text-center font-bold italic">QR CODE</span>
+                            <div className="w-24 h-24 bg-white flex items-center justify-center border border-gray-300 rounded p-1 shadow-sm">
+                                <QRCode
+                                    value={qrCodeValue}
+                                    size={256}
+                                    style={{ height: "auto", maxWidth: "100%", width: "100%" }}
+                                />
                             </div>
-                            <h2 className={`text-4xl font-black orangeText`}>
+                            <h2 className="text-4xl font-black orangeText">
                                 {toolData.hesp_CodigoHerramental}
                             </h2>
                         </div>
@@ -135,7 +156,7 @@ export default function VisualMold() {
                                 Esquema Familia {familyInfo?.EsquemaFamilia || 'Hex'}
                             </h3>
                             <img
-                                src={`/assets/Schemas/${familyInfo?.EsquemaFamilia}.png`}
+                                src={`http://10.1.1.14:8000/api/media/esquemas/` + familyInfo?.EsquemaFamilia + `.png`}
                                 alt="Esquema Técnico"
                                 className="w-full h-auto mb-4 border border-gray-100 p-2"
                             />
@@ -163,15 +184,15 @@ export default function VisualMold() {
                                 Características Mecánicas
                             </h3>
 
-                            <div className="space-y-6">
+                            <div className="space-y-6 bg-dark-greyFB rounded-md p-4">
                                 <div className="flex items-start space-x-3">
                                     <div className={`p-2 rounded orange`}>
                                         <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                                     </div>
                                     <div>
-                                        <p className="text-xs font-bold text-gray-300">Fecha de elaboración:</p>
+                                        <p className="text-xs font-bold">Fecha de elaboración:</p>
                                         <p>05/06/1998</p>
-                                        <p className="text-xs font-bold text-gray-300 mt-1">Material:</p>
+                                        <p className="text-xs font-bold mt-1">Material:</p>
                                         <p>AI6</p>
                                     </div>
                                 </div>
@@ -192,14 +213,14 @@ export default function VisualMold() {
 
                                 <div className="mt-10">
                                     <h4 className="text-sm font-bold border-b border-gray-500 pb-1 mb-2">Observaciones:</h4>
-                                    <p className="text-xs text-gray-300 leading-relaxed italic">
+                                    <p className="text-xs leading-relaxed italic">
                                         {toolData.hesp_Observacion || "Sin observaciones adicionales registradas en el sistema."}
                                     </p>
                                 </div>
                             </div>
 
                             {/* Plan View Button - Positioned at bottom right of card */}
-                            <button className={`orange text-white py-2 px-6 rounded absolute bottom-4 right-4 text-sm font-bold shadow-lg`}>
+                            <button className="btn btn-orange">
                                 Ver plano
                             </button>
                         </div>

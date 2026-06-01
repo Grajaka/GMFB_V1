@@ -1,16 +1,16 @@
 import * as React from "react";
 import NavBar from "../Components/NavBar.jsx";
-import {Link, useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import '../styles/globals.css'
 //import FileUploader from "../Components/FileUploader.js";
 import FilesUpload from "../Components/FilesUpload.jsx";
-import {useFormData} from "../Hooks/FormNewHerrContext/HerrContext.js";
-import {useMeasuresForm} from "../Hooks/useMeasuresForm.js";
+import { useFormData } from "../Hooks/FormNewHerrContext/HerrContext.js";
+import { useMeasuresForm } from "../Hooks/useMeasuresForm.js";
 import defaultScheme from "../assets/Schemas/default-scheme.png"
 
 
 export default function CreateMeasures() {
-    const {formData, updateFormData} = useFormData();
+    const { formData, updateFormData } = useFormData();
     const navigate = useNavigate();
 
     // Get family code from Context(Saved in CreateGnrlv1)
@@ -23,7 +23,7 @@ export default function CreateMeasures() {
         literals,
         schemeUrl,
         familyName,
-        formState: {errors}
+        formState: { errors }
     } = useMeasuresForm(familyCode);
 
     const canContinue = true;
@@ -31,39 +31,39 @@ export default function CreateMeasures() {
     const onNextPage = (data: any) => {
         updateFormData(data); // Saves Page 2 data to Context + SessionStorage
         navigate("/CreateUbic"); // Move to Page 2
-        const finalData = { ...formData, ...data};
+        const finalData = { ...formData, ...data };
         console.log("Page 1 and 2 Data:", finalData);
-        console.log("url scheme",schemeUrl);
+        console.log("url scheme", schemeUrl);
     };
-        if (!familyCode) {
-            return <div>Cargando... o Seleccione una familia.</div>;
-        }
+    if (!familyCode) {
+        return <div>Cargando... o Seleccione una familia.</div>;
+    }
 
     return (
 
         <>
-            <NavBar/>
+            <NavBar />
 
             <h1>Medidas de Molde</h1>
 
             <form onSubmit={handleSubmit(onNextPage, (errors) => console.log("Validation errors:", errors))}
-                  className="grid grid-cols-[4,auto] grid-rows-[repeat(4,auto)]
+                className="grid grid-cols-[4,auto] grid-rows-[repeat(4,auto)]
             gap-4 w-screen h-screen m-5"
             >
                 <div className="items-center">
 
                     <div className="space-y-8">
-                        {literals.map((lit)=>(
+                        {literals.map((lit) => (
                             <div key={lit} className="col-start-1 row-start-1">
                                 <label className="block p-1">Medida {lit}</label>
                                 <input
                                     type="number"
                                     step="0.01"
                                     placeholder={`Ingrese valor para ${lit}`}
-                                    {...register(`hesp_${lit}`, {valueAsNumber: true})}
-                                className={` border p-2 w-full ${errors[`hesp_${lit}`]? `border-red-500`:""}`}
+                                    {...register(`hesp_${lit}`, { valueAsNumber: true })}
+                                    className={` border p-2 w-full ${errors[`hesp_${lit}`] ? `border-red-500` : ""}`}
                                 />
-                                {errors[`hesp_${lit}`] &&(
+                                {errors[`hesp_${lit}`] && (
                                     <span className="text-red-500 text-xs">Requerido</span>
                                 )}
                             </div>
@@ -82,15 +82,15 @@ export default function CreateMeasures() {
                         src={schemeUrl}
                         alt={`Esquema ${familyName}`}
                         className="place-self-center object-cover"
-                        onError={(e)=>{
+                        onError={(e) => {
                             e.currentTarget.src = defaultScheme;
                         }}// REMEMBER TO SEARCH
-                          />
+                    />
                     <p className="block place-self-center">Esquema: {familyName}</p>
                 </div>
 
-               <div className=" col-start-2 col-end-4 row-start-2 justify-self-center ">
-                   <FilesUpload/>
+                <div className=" col-start-2 col-end-4 row-start-2 justify-self-center ">
+                    <FilesUpload />
                 </div>
 
                 {/*-----------------Buttons---------------------------------------- */}
@@ -100,8 +100,8 @@ export default function CreateMeasures() {
                     </button>
 
                     <button type="submit"
-                            disabled={!canContinue}
-                            className={`btn ${canContinue ? 'btn-orange' : 'bg-gray-400 cursor-not-allowed'}`}>
+                        disabled={!canContinue}
+                        className={`btn ${canContinue ? 'btn-orange' : 'bg-gray-400 cursor-not-allowed'}`}>
                         Continuar
                     </button>
                 </div>

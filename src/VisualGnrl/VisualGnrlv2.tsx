@@ -2,10 +2,10 @@ import '../styles/globals.css'
 import * as React from 'react';
 import Switch from '@mui/material/Switch';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
-import {blue} from '@mui/material/colors';
+import { blue } from '@mui/material/colors';
 import Avatar from '@mui/material/Avatar';
 import FilterForm from './FilterForm.js';
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import NavBar from "../Components/NavBar.jsx";
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import LoadingAnimation from "../Components/LoadingAnimation.jsx";
@@ -13,9 +13,9 @@ import { useNavigate } from "react-router-dom";
 //***********************************************************
 
 import useAxios from "../Hooks/useAxios/IndexAx.js";
-import {useEffect, useState, useMemo} from "react";
+import { useEffect, useState, useMemo } from "react";
 import Stack from "@mui/material/Stack";
-import {FETCH_STATUS} from "../Hooks/useAxios/FetchStatus.js";
+import { FETCH_STATUS } from "../Hooks/useAxios/FetchStatus.js";
 import {
     useReactTable,
     getCoreRowModel,
@@ -25,9 +25,9 @@ import {
     getSortedRowModel,
 } from '@tanstack/react-table';
 import Pagination from "@mui/material/Pagination";
-import {useForm} from "react-hook-form";
-import {yupResolver} from "@hookform/resolvers/yup";
-import {zodResolver} from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 /*
 const initialMoldes = [
@@ -70,7 +70,7 @@ const initialMoldes = [
 
 
 export default function VisualGnrlv2() {
-    const {response, error, status, fetchData} = useAxios(); //Response stores the data fetched from API
+    const { response, error, status, fetchData } = useAxios(); //Response stores the data fetched from API
     const [globalFilter, setGlobalFilter] = useState('');
     const [sorting, setSorting] = useState([])
     const isLoading = status === FETCH_STATUS.LOADING;
@@ -78,17 +78,13 @@ export default function VisualGnrlv2() {
 
     useEffect(() => {
         fetchData({
-            url: '/api/herramental_especifico/${id}/',
+            url: '/api/herramental_especifico/',
             method: "GET",
         });
     }, []);
 
     //Define (Memoizing) Columns
     const columns = useMemo(() => [
-        {
-            header: 'qr',
-            accessorKey: 'qr',
-        },
         {
             header: 'id',
             accessorKey: 'hesp_IdHerramentalEspecifico',
@@ -98,26 +94,22 @@ export default function VisualGnrlv2() {
             accessorKey: 'hesp_CodigoHerramental',
         },
         {
-            header: 'image',
-            accessorKey: 'image',
-        },
-        {
             header: 'machine',
-            accessorKey: 'machine',
+            accessorKey: 'nombre_maquina_pp',
         },
         {
             header: 'state',
-            accessorKey: '"hesp_IdEstadoHerr"',
+            accessorKey: 'nombre_estado_Herr',
         },
 
     ], []);
 
     //DEBUGGING
 
-    fetch('http://10.1.1.14:8000/api/herramental_especifico/')
-        .then(res => res.json())
-        .then(data => console.log('API RESPONSE:', data))
-        .catch(err => console.error('API ERROR:', err));
+    // fetch('http://localhost:8000/api/herramental_especifico/')
+    //     .then(res => res.json())
+    //     .then(data => console.log('API RESPONSE:', data))
+    //     .catch(err => console.error('API ERROR:', err));
     //-----------------------------------------------------------------0
     console.log("RESPONSE", response);
 
@@ -146,7 +138,7 @@ export default function VisualGnrlv2() {
 
 
     if (isLoading) {
-        return <LoadingAnimation message="Moldes"/>;
+        return <LoadingAnimation message="Moldes" />;
 
     }
 
@@ -154,10 +146,10 @@ export default function VisualGnrlv2() {
 
     return (
         <>
-            <NavBar/>
+            <NavBar />
             <div className="grid grid-cols-[0.45fr_1.9fr]">
                 <div>
-                    <FilterForm/>
+                    <FilterForm />
                 </div>
 
                 <div className="ml-7 mt-0  ">
@@ -168,16 +160,14 @@ export default function VisualGnrlv2() {
                     {/* RENDER THE LIST USING TANSTACK ROW MODEL */}
 
                     <ul>
-                        {/*{table.getRowModel().rows.map((row) => (
-                            // <Molde
-                            //     navigate(`/VisualMold/${hesp_IdHerramentalEspecifico}`),
-                            //     molde={row.original}/>
-
-                            // key={row},
-                            // state={id: row.original.hesp_IdHerramentalEspecifico},
-
-                       // ))} */}
-                        </ul>
+                        {table.getRowModel().rows.map((row) => (
+                            <Molde
+                                key={row.original.hesp_IdHerramentalEspecifico}
+                                molde={row.original}
+                                onNavigate={() => navigate(`/VisualMold/${row.original.hesp_IdHerramentalEspecifico}`)}
+                            />
+                        ))}
+                    </ul>
 
                     {/* MUI PAGINATION INTEGRATION */}
 
@@ -201,37 +191,27 @@ export default function VisualGnrlv2() {
 
 
 
-function Molde({molde}) {
+function Molde({ molde, onNavigate }) {
     return (
-            <li className="molde-list-item">
-                <Avatar
-                    alt={molde.name}
-                    src={molde.image}
-                    sx={{width: 100, height: 100}}
-                    variant="rounded"
-                    className="col-start-1 row-span-2"
+        <li className="molde-list-item" onClick={onNavigate} style={{ cursor: 'pointer' }}>
+            <Avatar
+                alt={molde.hesp_CodigoHerramental}
+                src={`http://localhost:8000/media/imagenes/sample-tool.jpg`}
+                sx={{ width: 100, height: 100 }}
+                variant="rounded"
+                className="col-start-1 row-span-2"
+            />
 
-                />
+            <h3 className="col-start-3 row-start-1 justify-self-start bg-blue-50">{molde.hesp_CodigoHerramental}</h3>
+            <p className="col-start-3 row-start-2 row-end-3 justify-self-start bg-blue-50">Estado: {molde.nombre_estado_Herr} </p>
+            <p className="col-start-3 row-start-3 row-end-4 justify-self-start bg-blue-50">Máquina: {molde.nombre_maquina_pp} </p>
 
-                <div className="justify-self-end col-start-2 row-span-2 p-2 bg-blue-50">
-                    <Avatar
-                        alt={molde.name}
-                        src={molde.qr}
-                        sx={{width: 100, height: 100}}
-                        variant="square"
-                    />
-                </div>
-
-                <h3 className="col-start-3 row-start-1 justify-self-start bg-blue-50">{molde.name}</h3>
-                <p className="col-start-3 row-start-2 row-end-3 justify-self-start bg-blue-50">Estado: {molde.state} </p>
-                <p className="col-start-3 row-start-2 row-end-3 justify-self-start bg-blue-50">Máquina: {molde.machine} </p>
-
-                <div className="col-start-5 row-span-2 m-2 bg-blue-50">
-                    <Link to="/CreateActivity">
-                        <ChecklistIcon/>
-                    </Link>
-                </div>
-            </li>
+            <div className="col-start-5 row-span-2 m-2 bg-blue-50">
+                <Link to="/CreateActivity">
+                    <ChecklistIcon />
+                </Link>
+            </div>
+        </li>
 
     )
 }

@@ -51,6 +51,8 @@ export const HerramentalModelSchema = z.object({
     fa_NombreFamilia: z.string().max(15),
 
 
+
+
     // Foreign Keys (Required per SQL constraints)
     hesp_IdHerramental: z.coerce.number().int(),
     hesp_IdTipoHerramental: z.coerce.number().int(),

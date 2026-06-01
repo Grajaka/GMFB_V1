@@ -82,7 +82,7 @@ export function CreateUbic() {
                 "/api/estanterias/",
                 "/api/pisos/",
                 "/api/estado_herramental/",
-                //"/api/diesets/",
+                "/api/diesets/",
             ];
 
             const results = await fetchData({ url: urls });
@@ -100,7 +100,7 @@ export function CreateUbic() {
                 setEstanterias(getData(results[2]));
                 setPisos(getData(results[3]));
                 setEstados(getData(results[4]));
-                //setDiesets(getData(results[4]));
+                setDiesets(getData(results[5]));
             }
         };
 
@@ -258,7 +258,7 @@ export function CreateUbic() {
                             <DropDown length={22} start={0} {...register("uh_NumeroPosicion")} />
                         </div>
 
-                        {/* <div className="col-start-1 row-start-3">
+                        <div className="col-start-1 row-start-3">
                             <label className="block p-2">DieSet</label>
                             <select {...register("hesp_IdDieSet")}>
                                 <option value="" hidden>DieSet</option>
@@ -269,7 +269,7 @@ export function CreateUbic() {
                                 ))}
                             </select>
 
-                        </div> */}
+                        </div>
                     </div>
 
                     <div className="grid p-2 col-span-2 row-start-3 card-form">
