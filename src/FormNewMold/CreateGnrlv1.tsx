@@ -11,6 +11,7 @@ import { HerramentalModelSchema } from "../Hooks/Validators/HerramentalEsp.js";
 import LoadingAnimation from "../Components/LoadingAnimation.jsx";
 import { useFormData } from "../Hooks/FormNewHerrContext/HerrContext.js";
 import { z } from "zod";
+import { useState } from "react";
 
 //pick Validator variables in this form
 const HerramentalValuesSchema = HerramentalModelSchema.pick(
@@ -40,6 +41,7 @@ export default function CreateGnrlv1() {
     const { updateFormData } = useFormData();
     const navigate = useNavigate();
     const { response, loading, fetchData } = useAxios();
+    const [nextConsecutive, setNextConsecutive] = useState("01");
 
 
 
@@ -156,6 +158,25 @@ export default function CreateGnrlv1() {
     const HerramentalCode = `${baseCodePrefix}${consecutiveCode}`;
     const Description1 = description;
 
+    //NextConsecutive ApiCall
+    useEffect(() => {
+        // Only fetch if all 3 parts are selected
+        if (he_IdHerramental && th_IdTipoHerramental && fa_IdFamilia) {
+            fetchData({
+                url: `/api/herramental/next-consecutive`,
+                method: "GET",
+                params: {
+                    h: he_IdHerramental,
+                    t: th_IdTipoHerramental,
+                    f: fa_IdFamilia
+                }
+            }).then(res => {
+                // If the API returns 5, we format it as "06"
+                const num = res.data.nextValue;
+                setNextConsecutive(num.toString().padStart(2, '0'));
+            });
+        }
+    }, [he_IdHerramental, th_IdTipoHerramental, fa_IdFamilia]);
 
     //Sync HerramentalCode whenever hesp_CodigoAlterno changes
     useEffect(() => {
@@ -267,11 +288,15 @@ export default function CreateGnrlv1() {
                     <div>
                         <p className="uppercase m-0 text-2xl text-blueFB"> {HerramentalCode}</p>
                         <input type={"hidden"} {...register("hesp_CodigoHerramental")} value={HerramentalCode} />
-                        <input
+                        <div className="mt-4">
+                            <span className="text-blueFB font-bold">Código Final:</span>
+                            <h2 className="text-3xl font-mono">{baseCodePrefix}{nextConsecutive}</h2>
+                        </div>
+                        {/* <input
                             type="number"
                             {...register("consecutive", { valueAsNumber: true })}
                             className="block p-2 border"
-                        />
+                        /> */}
                         {errors.consecutive && <p className="text-red-500 text-sm">{errors.consecutive.message}</p>}
 
                     </div>

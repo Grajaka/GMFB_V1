@@ -16,7 +16,7 @@ const FilterFormSchema = HerramentalModelSchema.pick({
     hesp_IdEstanteria: true,
 });
 
-export default function FilterForm() {
+export default function FilterForm({ globalFilter, setGlobalFilter }: { globalFilter: string; setGlobalFilter: (value: string) => void }) {
     const { useGetLookups } = useHerramental();
     const selectId = useId();
 
@@ -51,7 +51,7 @@ export default function FilterForm() {
             onSubmit={handleSubmit(onSubmit)}
             className="bg-orangeFB h-full hidden sm:block flex-col gap-3 px-5 py-6 shadow-3xl"
         >
-            <Search />
+            <Search globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} />
 
             {isLoading ? (
                 <p className="text-white text-xs animate-pulse">Cargando filtros...</p>

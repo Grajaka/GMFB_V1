@@ -24,8 +24,8 @@ export const useMeasuresForm = (familyCode: string | undefined) => {
         mode: "onChange"
     });
 
-    //const assetBaseUrl = "http://10.1.1.14/media/esquemas/";
-    const assetBaseUrl = import.meta.env.VITE_MEDIA_URL || "http://localhost:8000/media/esquemas/";
+    const assetBaseUrl = "http://10.1.1.14/media/esquemas/";
+    //const assetBaseUrl = import.meta.env.VITE_MEDIA_URL || "http://localhost:8000/media/esquemas/";
     return {
         ...methods,
         literals: familyData.Literals,

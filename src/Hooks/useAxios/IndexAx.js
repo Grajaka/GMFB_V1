@@ -11,8 +11,8 @@ const useAxios = () => {
 
 
     const axiosInstance = axios.create({
-        //baseURL: "http://10.1.1.14:8000"
-        baseURL: import.meta.env.VITE_API_URL || "http://localhost:8000"
+        baseURL: "http://10.1.1.14:8000"
+        //baseURL: import.meta.env.VITE_API_URL || "http://localhost:8000"
     });
 
     axiosInstance.interceptors.request.use(

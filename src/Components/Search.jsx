@@ -21,13 +21,19 @@ theme = createTheme(theme, {
     },
 });
 
-export default function Search() {
+export default function Search({ globalFilter, setGlobalFilter }) {
     return (
         <ThemeProvider theme={theme}>
             <div className="flex-row inline-flex items-center ml-0 m-5">
-                <MenuIcon fontSize="large" color="blueFB"/>
-                <input className="rounded-r-none font-semibold<"  type="text" placeholder="Buscar"/>
-                <button className="bg-white h-10.5 border-l-gray-500 rounded-r-sm "><SearchIcon color={"blueFB"}/></button>
+                <MenuIcon fontSize="large" color="blueFB" />
+                <input
+                    value={globalFilter ?? ''}
+                    onChange={e => setGlobalFilter(e.target.value)}
+                    placeholder="Busca en todos los datos"
+                    className="p-2 border border-gray-300 rounded">
+                </input>
+                {/* <input className="rounded-r-none font-semibold<"  type="text" placeholder="Buscar"/>
+                <button className="bg-white h-10.5 border-l-gray-500 rounded-r-sm "><SearchIcon color={"blueFB"}/></button> */}
             </div>
         </ThemeProvider>
 

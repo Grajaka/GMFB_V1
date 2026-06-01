@@ -5,10 +5,10 @@ import FBIcon from "../assets/Icons/FBIcon.png"
 import LoadingAnimation from "../Components/LoadingAnimation.jsx";
 import * as React from "react";
 import useAxios from "../Hooks/useAxios/IndexAx.js";
-import {useEffect, useState, useMemo} from "react";
+import { useEffect, useState, useMemo } from "react";
 import Pagination from '@mui/material/Pagination';
 import Stack from "@mui/material/Stack";
-import {FETCH_STATUS} from "../Hooks/useAxios/FetchStatus.js";
+import { FETCH_STATUS } from "../Hooks/useAxios/FetchStatus.js";
 import {
     useReactTable,
     getCoreRowModel,
@@ -20,7 +20,7 @@ import {
 
 
 export default function Orders() {
-    const {response, error, status, fetchData} = useAxios(); //Response stores the data fetched from API
+    const { response, error, status, fetchData } = useAxios(); //Response stores the data fetched from API
     const [globalFilter, setGlobalFilter] = useState('');
     const [sorting, setSorting] = useState([])
     const isLoading = status === FETCH_STATUS.LOADING;
@@ -68,12 +68,12 @@ export default function Orders() {
         },
     ], []);
 
-//DEBUGGING
+    //DEBUGGING
     fetch('http://10.1.1.14:8000/api/ordenes-produccion-forja')
         .then(res => res.json())
         .then(data => console.log('API RESPONSE:', data))
         .catch(err => console.error('API ERROR:', err));
-//-----------------------------------------------------------------0
+    //-----------------------------------------------------------------0
     console.log("RESPONSE", response);
 
     console.log("RESPONSE TYPE", typeof response);
@@ -107,7 +107,7 @@ export default function Orders() {
 
 
     if (isLoading) {
-        return <LoadingAnimation message="Órdenes con herramentales"/>;
+        return <LoadingAnimation message="Órdenes con herramentales" />;
 
     }
 
@@ -115,65 +115,66 @@ export default function Orders() {
     return (
 
         <>
-            <NavBar/>
-            <div className = "m-2">
+            <NavBar />
+            <div className="m-2">
                 <h1>Histórico Ordenes</h1>
 
                 <div className="flex justify-end">
                     <input value={globalFilter ?? ''}
-                           onChange={e => setGlobalFilter(e.target.value)}
-                           placeholder="Busca en todos los datos"
-                           className="p-2 border border-gray-300 rounded"></input>
+                        onChange={e => setGlobalFilter(e.target.value)}
+                        placeholder="Busca en todos los datos"
+                        className="p-2 border border-gray-300 rounded"></input>
                 </div>
 
 
                 <table
                     className="w-full table-fixed border-spacing-2 md:border-spacing-4 border-bg-blueFB bg-white">
                     <thead className="bg-white border-b-2 border-light-greyFB">
-                    {table.getHeaderGroups().map(headerGroup => (
-                        <tr key={headerGroup.id}>
-                            {headerGroup.headers.map(header => (
-                                <th key={header.id}
-                                    onClick={header.column.getToggleSortingHandler()}
-                                    className="p-3 text-sm text-blueFB tracking-wide text-left">
+                        {table.getHeaderGroups().map(headerGroup => (
+                            <tr key={headerGroup.id}>
+                                {headerGroup.headers.map(header => (
+                                    <th key={header.id}
+                                        onClick={header.column.getToggleSortingHandler()}
+                                        className="p-3 text-sm text-blueFB tracking-wide text-left">
 
-                                    {
-                                        flexRender(
+                                        {
+                                            flexRender(
 
-                                            header.column.columnDef.header,
-                                            header.getContext(),
+                                                header.column.columnDef.header,
+                                                header.getContext(),
 
-                                        )}
+                                            )}
 
-                                    {
-                                        {'asc': "🔼",
-                                            'desc': "🔽",
-                                        }[
-                                        header.column.getIsSorted() ] ??(header.column.getCanSort()? "🟦": null)
+                                        {
+                                            {
+                                                'asc': "🔼",
+                                                'desc': "🔽",
+                                            }[
+                                            header.column.getIsSorted()] ?? (header.column.getCanSort() ? "🟦" : null)
 
 
-                                    }
-                                </th>
-                            ))}
-                        </tr>
-                    ))}
+                                        }
+                                    </th>
+                                ))}
+                            </tr>
+                        ))}
                     </thead>
                     <tbody className="border-b-2 border-light-greyFB">
-                    {isLoading && <div>Loading...{FBIcon}</div>}
-                    {table.getRowModel().rows.map(row => (
-                        <tr key={row.id} className=" border-2 border-b-dark-greyFB">
-                            {row.getVisibleCells().map(cell => (
-                                <td key={cell.column.id} className="p-5 text-sm text-light-grayFB">
-                                    {flexRender(cell.column.columnDef.cell,
-                                        cell.getContext()
-                                    )}
-                                </td>
-                            ))}
-                        </tr>
-                    ))}
+                        {isLoading && <div>Loading...{FBIcon}</div>}
+                        {table.getRowModel().rows.map(row => (
+                            <tr key={row.id} className=" border-2 border-b-dark-greyFB">
+                                {row.getVisibleCells().map(cell => (
+                                    <td key={cell.column.id} className="p-5 text-sm text-light-grayFB">
+                                        {flexRender(cell.column.columnDef.cell,
+                                            cell.getContext()
+                                        )}
+                                    </td>
+                                ))}
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
-                <div className= "flex justify-center m-2 bg-BlueFB">
+                <div className="flex justify-center m-2 bg-BlueFB">
                     <Stack spacing={2}>
                         <Pagination
                             count={table.getPageCount()}

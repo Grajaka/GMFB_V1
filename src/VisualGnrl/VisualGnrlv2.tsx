@@ -123,7 +123,7 @@ export default function VisualGnrlv2() {
             globalFilter,
             sorting,
         },
-        onGlobalFilterChange: setGlobalFilter,
+        onGlobalFilterChange: setGlobalFilter, //Owns globalFilter state
         onSortingChange: setSorting,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
@@ -149,7 +149,7 @@ export default function VisualGnrlv2() {
             <NavBar />
             <div className="grid grid-cols-[0.45fr_1.9fr]">
                 <div>
-                    <FilterForm />
+                    <FilterForm globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} />
                 </div>
 
                 <div className="ml-7 mt-0  ">
@@ -197,9 +197,9 @@ function Molde({ molde, onNavigate }) {
             <Avatar
                 alt={molde.hesp_CodigoHerramental}
                 src={`http://localhost:8000/media/imagenes/sample-tool.jpg`}
-                sx={{ width: 100, height: 100 }}
+                sx={{ width: 200, height: 200 }}
                 variant="rounded"
-                className="col-start-1 row-span-2"
+                className="col-start-1 row-span-4 items-center"
             />
 
             <h3 className="col-start-3 row-start-1 justify-self-start bg-blue-50">{molde.hesp_CodigoHerramental}</h3>

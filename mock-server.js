@@ -43,15 +43,15 @@ const mockHerramentales = [
 
 // Mock data returned for Location steps (CreateUbic.tsx)
 const mockMaquinas = [
-    { id: 1, numero: "PRENSA-2000" },
-    { id: 2, numero: "PRENSA-1600" },
-    { id: 3, numero: "MARTILLO-05" }
+    { id: 1, numero: "84" },
+    { id: 2, numero: "25" },
+    { id: 3, numero: "28" }
 ];
 
 const mockActividades = [
-    { id: 15, nombre: "Limpieza General" },
-    { id: 25, nombre: "Reparación Superficial" },
-    { id: 35, nombre: "Ajuste de Dimensiones" }
+    { id: 15, nombre: "Pulir" },
+    { id: 25, nombre: "Soldar" },
+    { id: 35, nombre: "Perforar" }
 ];
 
 const mockEstanterias = [
@@ -72,9 +72,9 @@ const mockEstados = [
 ];
 
 const mockDiesets = [
-    { di_IdDieSet: 1, di_CodigoDieSet: "DieSet 1" },
-    { di_IdDieSet: 2, di_CodigoDieSet: "DieSet 2" },
-    { di_IdDieSet: 3, di_CodigoDieSet: "DieSet 3" }
+    { di_IdDieSet: 1, di_CodigoDieSet: "1300" },
+    { di_IdDieSet: 2, di_CodigoDieSet: "1500" },
+    { di_IdDieSet: 3, di_CodigoDieSet: "1600" }
 ];
 
 // -----------------------------------------------------------
@@ -89,16 +89,16 @@ const mockHerramentalEspecifico = [
         hesp_Descripcion1: "Mock tool for testing",
         hesp_CodigoAlterno: "NB-10",
         hesp_CantHerramental: "1",
-        nombre_maquina_pp: "PRENSA-2000",
-        nombre_maquina_opc: "PRENSA-1600",
-        codigo_dieset: "DieSet 1",
+        nombre_maquina_pp: "84",
+        nombre_maquina_opc: "25",
+        codigo_dieset: "1500",
         numero_piso: "1",
-        nombre_estanteria: "ESTANTE GENERAL A",
+        nombre_estanteria: "A",
         numero_fila: "1",
         numero_columna: "1",
         numero_posicion: "1",
         nombre_estado_Herr: "Disponible para uso",
-        nombre_herramental: "Molde Forja Superior",
+        nombre_herramental: "Molde",
         nombre_tipo_herramental: "Troquel (TR)",
         nombre_familia: "HEXAGONAL",
         nombre_actividad: "Pulir",
@@ -126,16 +126,16 @@ const mockHerramentalEspecifico = [
         hesp_Descripcion1: "Molde para tuercas hexagonales",
         hesp_CodigoAlterno: "NB-30",
         hesp_CantHerramental: "1",
-        nombre_maquina_pp: "PRENSA-150",
-        nombre_maquina_opc: "PRENSA-160",
-        codigo_dieset: "DieSet 2",
+        nombre_maquina_pp: "25",
+        nombre_maquina_opc: "28",
+        codigo_dieset: "1500",
         numero_piso: "2",
-        nombre_estanteria: "ESTANTE GENERAL B",
+        nombre_estanteria: "B",
         numero_fila: "1",
         numero_columna: "1",
         numero_posicion: "1",
         nombre_estado_Herr: "En mantenimiento",
-        nombre_herramental: "Molde Forja Inferior",
+        nombre_herramental: "Molde",
         nombre_tipo_herramental: "Troquel (TR)",
         nombre_familia: "CUADRADO",
         nombre_actividad: "Soldar",
