@@ -19,10 +19,14 @@ type DropdownItem = {
     es_NombreEstanteria?: string;
     pi_NumeroPiso?: number | string;
     pi_DescripcionPiso?: string;
-    di_IdDieSet?: number;
-    di_CodigoDieSet?: number | string;
     eh_IdEstadoHerr?: number;
     eh_NombreEstado?: string;
+    di_IdDieSet?: number;
+    di_CodigoDieSet?: number | string;
+    di_Dimensiones?: string;
+    di_IdPiso?: number;
+    di_IdEstanteria?: number;
+    di_IdUbicacionDieset?: number;
 };
 
 type FormValues = z.infer<typeof UbicacionHerramentalSchema>;
@@ -31,16 +35,8 @@ export function CreateUbic() {
     const { formData, updateFormData, clearForm } = useFormData();
     const navigate = useNavigate();
     const { response, fetchData, CreatePost } = useAxios();
-
-
-
-    const [maquinas, setMaquinas] = useState<DropdownItem[]>([]);
-    console.log("maquina sample:", response[0]?.[0]);
     const [pisos, setPisos] = useState<DropdownItem[]>([]);
     const [estanterias, setEstanterias] = useState<DropdownItem[]>([]);
-    const [estados, setEstados] = useState<DropdownItem[]>([]);
-    const [actividades, setActividades] = useState<DropdownItem[]>([]);
-    console.log("actividad sample:", response[1]?.[0]);
     const [diesets, setDiesets] = useState<DropdownItem[]>([]);
 
     //const [maquinas, pisos, estanterias, actividades, diesets] = response || [[], [], [], [], []];
@@ -53,15 +49,17 @@ export function CreateUbic() {
     } = useForm<FormValues>({
         resolver: zodResolver(UbicacionHerramentalSchema) as unknown as import("react-hook-form").Resolver<FormValues>,
         defaultValues: {
-            hesp_IdMaquinaPP: formData.hesp_IdMaquinaPP ?? 0,
-            hesp_IdMaquinaOpc: formData.hesp_IdMaquinaOpc ?? 0,
+            hesp_IdMaquinaPP: formData.hesp_IdMaquinaPP ?? 1,
+            hesp_IdMaquinaOpc: formData.hesp_IdMaquinaOpc ?? 1,
             uh_NumeroFila: formData.uh_NumeroFila ?? 0,
             uh_NumeroColumna: formData.uh_NumeroColumna ?? 0,
             uh_NumeroPosicion: formData.uh_NumeroPosicion ?? 0,
             hesp_CantHerramental: formData.hesp_CantHerramental ?? 0,
             hesp_Observacion: formData.hesp_Observacion ?? "",
             hesp_IdActividad: formData.hesp_IdActividad ?? 0,
-            hesp_IdEstadoHerr: formData.hesp_IdEstadoHerr ?? 0,
+            hesp_IdEstadoHerr: formData.hesp_IdEstadoHerr ?? 1,
+            eh_IdEstadoHerr: formData.eh_IdEstadoHerr ?? 0,
+            eh_NombreEstado: formData.eh_NombreEstado ?? "",
             hesp_IdDieSet: formData.hesp_IdDieSet ?? 0,
             hesp_IdEstanteria: formData.hesp_IdEstanteria ?? 0,
             es_IdEstanteria: formData.es_IdEstanteria ?? 0,
@@ -74,11 +72,8 @@ export function CreateUbic() {
     useEffect(() => {
         const loadDropdownData = async () => {
             const urls = [
-                "/api/maquinas/",
-                "/api/actividades/",
                 "/api/estanterias/",
                 "/api/pisos/",
-                "/api/estado_herramental/",
                 "/api/diesets/",
             ];
 
@@ -92,12 +87,10 @@ export function CreateUbic() {
                     return [];
                 };
 
-                setMaquinas(getData(results[0]));
-                setActividades(getData(results[1]));
-                setEstanterias(getData(results[2]));
-                setPisos(getData(results[3]));
-                setEstados(getData(results[4]));
-                setDiesets(getData(results[5]));
+
+                setEstanterias(getData(results[0]));
+                setPisos(getData(results[1]));
+                setDiesets(getData(results[2]));
             }
         };
 
@@ -150,7 +143,7 @@ export function CreateUbic() {
 
             let ubicacionId;
             try {
-                const resUbic = await CreatePost("/api/ubicaciones/", "POST", ubicacionData);
+                const resUbic = await CreatePost("/api/ubicacionesDieSet/", "POST", ubicacionData);
                 ubicacionId = resUbic?.uh_IdUbicacionHerr;
             } catch (err: any) {
                 // Check if the backend complains that this specific combination already exists
@@ -225,30 +218,6 @@ export function CreateUbic() {
 
             <form onSubmit={handleSubmit(onFinalSubmit, (formErrors) => console.log("Validation errors:", formErrors))}>
                 <div className="grid grid-cols-[3,fr] grid-rows-[repeat(5,fr)] gap-4 w-screen h-screen m-5">
-                    <div className="grid p-2 col-span-2 row-start-1 card-form">
-                        <div className="col-start-1 row-start-1">
-                            <label className="block p-2">N° máquina PP</label>
-                            <select {...register("hesp_IdMaquinaPP")}>
-                                <option value="" hidden>N° máquina PP</option>
-                                {maquinas?.map((maquina, index) => (
-                                    <option value={maquina.id ?? index} key={maquina.id ?? index}>
-                                        {maquina.numero ?? ""}</option>
-                                ))}
-                            </select>
-                        </div>
-
-                        <div className="col-start-2 row-start-1">
-                            <label className="block p-2">N° máquina Opc</label>
-                            <select {...register("hesp_IdMaquinaOpc")}>
-                                <option value="" hidden>N° máquina Opc</option>
-                                {maquinas?.map((maquina, index) => (
-                                    <option value={maquina.id ?? index} key={maquina.id ?? index}>
-                                        {maquina.numero ?? ""}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
 
                     <div className="grid col-span-3 row-start-2 p-2 card-form">
                         <div className="col-start-1 row-start-2">
@@ -291,9 +260,9 @@ export function CreateUbic() {
                         </div>
 
                         <div className="col-start-1 row-start-3">
-                            <label className="block p-2">DieSet</label>
-                            <select {...register("hesp_IdDieSet")}>
-                                <option value="" hidden>DieSet</option>
+                            <label className="block p-2">Código DieSet</label>
+                            <select {...register("di_IdDieSet")}>
+                                <option value="" hidden>Código DieSet</option>
                                 {diesets?.map((dieSet, index) => (
                                     <option value={dieSet.di_IdDieSet ?? index} key={dieSet.di_IdDieSet ?? index}>
                                         {dieSet.di_CodigoDieSet ?? ""}
@@ -302,50 +271,16 @@ export function CreateUbic() {
                             </select>
 
                         </div>
+
+
+                        <button type="button" className="btn btn-orange col-start-1 row-start-4" onClick={() => navigate(-1)}>
+                            Atrás
+                        </button>
+
+                        <button type="submit" className="btn btn-orange col-start-4 row-start-4">
+                            Finalizar
+                        </button>
                     </div>
-
-                    <div className="grid p-2 col-span-2 row-start-3 card-form">
-                        <div className="col-start-1 row-start-1">
-                            <label className="">Estado</label>
-                            <select {...register("hesp_IdEstadoHerr")}>
-                                <option value="" hidden>Estado</option>
-                                {estados.map((estado, index) => (
-                                    <option value={estado.eh_IdEstadoHerr ?? index} key={estado.eh_IdEstadoHerr ?? index}>
-                                        {estado.eh_NombreEstado ?? ""}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-
-                        <div className="col-start-2 row-start-1">
-                            <label className="block p-2">Actividad Pendiente</label>
-                            <select {...register("hesp_IdActividad")}>
-                                <option value="" hidden>Actividad Pendiente</option>
-                                {actividades?.map((actividad, index) => (
-                                    <option value={actividad.id ?? index} key={actividad.id ?? index}>
-                                        {actividad.nombre ?? ""}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-
-                        <div className="col-start-3 row-start-1">
-                            <label className="block p-2">Existencia</label>
-                            <input
-                                type="number"
-                                {...register("hesp_CantHerramental")}
-                                placeholder="Existencia"
-                            />
-                        </div>
-                    </div>
-
-                    <button type="button" className="btn btn-orange col-start-1 row-start-4" onClick={() => navigate(-1)}>
-                        Atrás
-                    </button>
-
-                    <button type="submit" className="btn btn-orange col-start-4 row-start-4">
-                        Finalizar
-                    </button>
                 </div>
             </form>
         </>

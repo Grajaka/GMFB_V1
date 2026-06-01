@@ -153,7 +153,7 @@ export default function VisualGnrlv2() {
                 </div>
 
                 <div className="ml-7 mt-0  ">
-                    <Link to="/CreateGnrl">
+                    <Link to="/CreateGnrlv1">
                         <button className="btn btn-blue">Nuevo molde</button>
                     </Link>
 

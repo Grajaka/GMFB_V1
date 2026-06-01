@@ -7,11 +7,14 @@ import { type FamiliasSchema, type FamilySchemaItem } from "./Validators/FamilyS
 import rawFamiliasSchema from '../assets/Schemas/familias.schema.json' with {type: 'json'};
 
 
+import { useFormData } from "./FormNewHerrContext/HerrContext.js";
+
 // Properly cast the JSON as our typed schema
 const familiasSchema = rawFamiliasSchema as FamiliasSchema;
 
 
 export const useMeasuresForm = (familyCode: string | undefined) => {
+    const { formData } = useFormData();
 
     // Handle the lookup with a fallback to 'nan'
     const effectiveCode = (familyCode && familiasSchema[familyCode]) ? familyCode : 'nan';
@@ -21,7 +24,8 @@ export const useMeasuresForm = (familyCode: string | undefined) => {
     const methods = useForm<MeasuresFormData>({
         shouldUnregister: true,
         resolver: zodResolver(PageMeasuresSchema),
-        mode: "onChange"
+        mode: "onChange",
+        defaultValues: formData,
     });
 
     const assetBaseUrl = "http://10.1.1.14/media/esquemas/";

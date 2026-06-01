@@ -27,8 +27,8 @@ export const UbicacionHerramentalSchema = z.object({
     hesp_IdEstadoHerr: z.coerce.number().int().min(1, "Seleccione un estado"),
     hesp_CantHerramental: z.coerce.number().int().min(1, "La existencia debe ser al menos 1"),
     //Estado
-    eh_IdEstadoHerr: z.coerce.number().min(1, "Debe seleccionar un estado"),
-    eh_NombreEstado: z.string().max(15),
+    eh_IdEstadoHerr: z.coerce.number().int().optional().nullable(),
+    eh_NombreEstado: z.string().max(15).optional().nullable(),
 
     // Optional/Pending
     hesp_IdActividad: z.coerce.number().int().optional().nullable(),

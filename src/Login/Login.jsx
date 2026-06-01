@@ -53,7 +53,7 @@ export default function Login(){
                             <span className="text-lg">Contraseña</span>
                             <input className="rounded-md p-1 border-2 outline-none
                             focus:border-[#4d4d4d] focus:bg-[#fffff] text-dark-greyFB"
-                                   onChange={(e)=>setPsw(e.target.value)} value={psw} type="text"
+                                   onChange={(e)=>setPsw(e.target.value)} value={psw}
                                    type="password" placeholder="Contraseña"   />
 
                         </div>

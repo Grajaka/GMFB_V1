@@ -14,8 +14,8 @@ export default function VisualMold() {
     const { fetchData } = useAxios();
     const [toolData, setToolData] = useState<Record<string, any> | null>(null);
     const [imageUrl, setImageUrl] = useState<string>("");
-    // const ImgHerrUrlBase = "http://10.1.1.14/media/imagenes/"; ------------------------------
-    const ImgHerrUrlBase = import.meta.env.VITE_MEDIA_URL || "http://localhost:8000/media/imagenes/";
+    const ImgHerrUrlBase = "http://10.1.1.14/media/imagenes/";
+    //const ImgHerrUrlBase = import.meta.env.VITE_MEDIA_URL || "http://localhost:8000/media/imagenes/";
 
     useEffect(() => {
         const loadData = async () => {
@@ -24,8 +24,8 @@ export default function VisualMold() {
                 setToolData(resTool);
                 if (resTool.hesp_IdImagen) {
                     const resDoc = await fetchData({
-                        //url: `http://10.1.1.14:8000/api/documents/${resTool.hesp_IdImagen}/`
-                        url: `/api/documents/${resTool.hesp_IdImagen}/` //-------------------------------------------------------------------------------------
+                        url: `http://10.1.1.14:8000/api/documents/${resTool.hesp_IdImagen}/`
+                        //url: `/api/documents/${resTool.hesp_IdImagen}/` //-------------------------------------------------------------------------------------
                     });
                     if (resDoc && resDoc.archivo) {
                         setImageUrl(`${ImgHerrUrlBase}${resDoc.archivo.split('/').pop()}`);
@@ -36,7 +36,7 @@ export default function VisualMold() {
         if (id) loadData();
     }, [id]);
 
-    const familyInfo = toolData ? familiasSchema[toolData.hesp_IdFamilia as keyof typeof familiasSchema] : null;
+    const familyInfo = toolData ? familiasSchema[toolData.codigo_familia as keyof typeof familiasSchema] : null;
 
     const qrCodeValue = toolData
         ? [
@@ -52,7 +52,10 @@ export default function VisualMold() {
         ].join("\n")
         : "";
 
+
+
     if (!toolData) return <div className="p-10 text-center">Cargando datos del herramental...</div>;
+
 
     return (
         <div className="bg-white min-h-screen font-['Poppins']">
@@ -125,7 +128,7 @@ export default function VisualMold() {
                             <div className="space-y-1">
                                 <h4 className="font-bold border-b border-gray-300 pb-1">Ubicación Molde:</h4>
                                 <p><strong>Piso:</strong> {toolData.numero_piso}</p>
-                                <p><strong> Descripción: </strong> {toolData.descripcion_piso} </p>
+                                <p><strong>Descripción: </strong> {toolData.descripcion_piso} </p>
                                 <p><strong>Estante:</strong> {toolData.nombre_estanteria}</p>
                                 <p><strong>Fila:</strong> {toolData.numero_fila}</p>
                                 <p><strong>Celda:</strong> {toolData.numero_columna}</p>
@@ -153,13 +156,14 @@ export default function VisualMold() {
                         {/* Technical Drawing Section */}
                         <div className="pt-4 border-t border-gray-100">
                             <h3 className={`font-bold orangeText mb-4 uppercase text-sm`}>
-                                Esquema Familia {familyInfo?.EsquemaFamilia || 'Hex'}
+                                Esquema Familia {familyInfo?.EsquemaFamilia || 'HEX'}
                             </h3>
                             <img
                                 src={`http://10.1.1.14:8000/api/media/esquemas/` + familyInfo?.EsquemaFamilia + `.png`}
                                 alt="Esquema Técnico"
                                 className="w-full h-auto mb-4 border border-gray-100 p-2"
                             />
+
 
                             {/* Literals / Dimensions boxes */}
                             <div className="mt-4">

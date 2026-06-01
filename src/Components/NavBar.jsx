@@ -15,7 +15,7 @@ export default function NavBar() {
                 </Link>
 
                 <Link
-                    to={"/VisualGnrlv1"}>
+                    to={"/VisualGnrlv2"}>
                     <li className="border-t-2 border-white py-0.5 hover:border-orangeFB"> Home</li>
                 </Link>
                 <Link to={"/CreateGnrlv1"}>
