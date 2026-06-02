@@ -17,8 +17,8 @@ import { useState } from "react";
 const HerramentalValuesSchema = HerramentalModelSchema.pick(
     {
 
-        he_IdHerramental: true,
-        th_IdTipoHerramental: true,
+        //he_IdHerramental: true,
+        //th_IdTipoHerramental: true,
         hesp_IdHerramental: true,
         hesp_IdTipoHerramental: true,
         hesp_IdFamilia: true,         // El select de Familia
@@ -27,7 +27,7 @@ const HerramentalValuesSchema = HerramentalModelSchema.pick(
         hesp_CodigoHerramental: true,
         hesp_Descripcion1: true,
         fa_NombreFamilia: true,
-        fa_IdFamilia: true,
+        //fa_IdFamilia: true,
         fa_CodigoFamilia: true,
     }
 )
@@ -59,9 +59,9 @@ export default function CreateGnrlv1() {
         resolver: zodResolver(HerramentalValuesSchema),
         defaultValues: {
             hesp_IdHerramental: formData.hesp_IdHerramental ?? 0,
-            he_IdHerramental: formData.he_IdHerramental ?? 0,
-            th_IdTipoHerramental: formData.th_IdTipoHerramental ?? 0,
-            fa_IdFamilia: formData.fa_IdFamilia ?? 0,
+            /*             he_IdHerramental: formData.he_IdHerramental ?? 0,
+                        th_IdTipoHerramental: formData.th_IdTipoHerramental ?? 0,
+                        fa_IdFamilia: formData.fa_IdFamilia ?? 0, */
             hesp_CodigoAlterno: formData.hesp_CodigoAlterno ?? "",
             consecutive: formData.consecutive ?? 0,
             hesp_CodigoHerramental: formData.hesp_CodigoHerramental ?? "",
@@ -82,9 +82,9 @@ export default function CreateGnrlv1() {
     // 1. Destructure the watched fields as an object
     const watched = watch();
     const {
-        he_IdHerramental,
-        th_IdTipoHerramental,
-        fa_IdFamilia,
+        hesp_IdHerramental,
+        hesp_IdTipoHerramental,
+        hesp_IdFamilia,
         hesp_CodigoAlterno,
         fa_CodigoFamilia,
         consecutive } = watched;
@@ -95,14 +95,14 @@ export default function CreateGnrlv1() {
 
     const [tipo_herramental, familias, herramentales] = response || [[], [], []];
 
-    // Sync fa_CodigoFamilia whenever fa_IdFamilia changes
+    // Sync fa_CodigoFamilia whenever hesp_IdFamilia changes
     useEffect(() => {
-        const selectedFamily = familias?.find(i => i.fa_IdFamilia === Number(fa_IdFamilia));
+        const selectedFamily = familias?.find(i => i.fa_IdFamilia === Number(hesp_IdFamilia));
         if (selectedFamily?.fa_CodigoFamilia) {
             setValue("fa_CodigoFamilia", selectedFamily.fa_CodigoFamilia);
             setValue("fa_NombreFamilia", selectedFamily.fa_NombreFamilia);
         }
-    }, [fa_IdFamilia, familias, setValue]);
+    }, [hesp_IdFamilia, familias, setValue]);
     console.log("fa_CodigoFamilia", fa_CodigoFamilia);
 
 
@@ -114,26 +114,26 @@ export default function CreateGnrlv1() {
         // Find the object in your original response arrays
         const hName =
             herramentales?.find(
-                (i) => i.he_IdHerramental === Number(he_IdHerramental)
+                (i) => i.he_IdHerramental === Number(hesp_IdHerramental)
             )?.he_NombreHerramental || "...";
 
         const tName =
             tipo_herramental?.find(
-                (i) => i.th_IdTipoHerramental === Number(th_IdTipoHerramental)
+                (i) => i.th_IdTipoHerramental === Number(hesp_IdTipoHerramental)
             )?.th_NombreTipoHerramental || "...";
 
         const fName =
             familias?.find(
-                (i) => i.fa_IdFamilia === Number(fa_IdFamilia)
+                (i) => i.fa_IdFamilia === Number(hesp_IdFamilia)
             )?.fa_NombreFamilia || "...";
 
 
         console.log("description", fName);
         return `Herramental ${hName} tipo ${tName} de la Familia ${fName} con código alterno ${hesp_CodigoAlterno || "..."}`;
     }, [
-        he_IdHerramental,
-        th_IdTipoHerramental,
-        fa_IdFamilia,
+        hesp_IdHerramental,
+        hesp_IdTipoHerramental,
+        hesp_IdFamilia,
         hesp_CodigoAlterno,
         herramentales,
         tipo_herramental,
@@ -148,12 +148,12 @@ export default function CreateGnrlv1() {
 
     const baseCodePrefix = useMemo(() => {
         // Find codes in your response arrays
-        const hCode = herramentales?.find(i => i.he_IdHerramental === Number(he_IdHerramental))?.he_CodigoHerramental || "";
-        const tCode = tipo_herramental?.find(i => i.th_IdTipoHerramental === Number(th_IdTipoHerramental))?.th_CodigoTipoHerramental || "";
-        const fCode = familias?.find(i => i.fa_IdFamilia === Number(fa_IdFamilia))?.fa_CodigoFamilia || "";
+        const hCode = herramentales?.find(i => i.he_IdHerramental === Number(hesp_IdHerramental))?.he_CodigoHerramental || "";
+        const tCode = tipo_herramental?.find(i => i.th_IdTipoHerramental === Number(hesp_IdTipoHerramental))?.th_CodigoTipoHerramental || "";
+        const fCode = familias?.find(i => i.fa_IdFamilia === Number(hesp_IdFamilia))?.fa_CodigoFamilia || "";
 
         return `${hCode}${tCode}-${fCode}`;
-    }, [he_IdHerramental, th_IdTipoHerramental, fa_IdFamilia, response]);
+    }, [hesp_IdHerramental, hesp_IdTipoHerramental, hesp_IdFamilia, response]);
 
     const consecutiveCode = String(consecutive || "").padStart(2, "0");
     const HerramentalCode = `${baseCodePrefix}${consecutiveCode}`;
@@ -162,14 +162,14 @@ export default function CreateGnrlv1() {
     //NextConsecutive ApiCall
     useEffect(() => {
         // Only fetch if all 3 parts are selected
-        if (he_IdHerramental && th_IdTipoHerramental && fa_IdFamilia) {
+        if (hesp_IdHerramental && hesp_IdTipoHerramental && hesp_IdFamilia) {
             fetchConsecutive({
                 url: `/api/herramental/next-consecutive`,
                 method: "GET",
                 params: {
-                    h: he_IdHerramental,
-                    t: th_IdTipoHerramental,
-                    f: fa_IdFamilia
+                    h: hesp_IdHerramental,
+                    t: hesp_IdTipoHerramental,
+                    f: hesp_IdFamilia
                 }
             }).then(res => {
                 // If the API returns 5, we format it as "06"
@@ -177,7 +177,7 @@ export default function CreateGnrlv1() {
                 setNextConsecutive(num.toString().padStart(2, '0'));
             });
         }
-    }, [he_IdHerramental, th_IdTipoHerramental, fa_IdFamilia, fetchConsecutive]);
+    }, [hesp_IdHerramental, hesp_IdTipoHerramental, hesp_IdFamilia, fetchConsecutive]);
 
     //Sync HerramentalCode whenever hesp_CodigoAlterno changes
     useEffect(() => {
@@ -230,35 +230,35 @@ export default function CreateGnrlv1() {
                 <div className="space-y-8">
                     <div>
                         <label className="block p-2" htmlFor="NombreHerramental"> Categoria Herramental</label>
-                        <select {...register("hesp_IdHerramental")} className="w-full p-2 border round ed">
+                        <select {...register("hesp_IdHerramental")} className="w-full p-2 border rounded">
                             <option value=""> Seleccione Herramental</option>
-                            {herramentales?.map((item: number) => (
+                            {herramentales?.map((item: any) => (
                                 <option value={item.he_IdHerramental} key={item.he_IdHerramental}>{item.he_NombreHerramental}</option>
                             ))}
                         </select>
-                        {errors.he_IdHerramental && <p className="text-red-500 text-sm">{errors.he_IdHerramental.message}</p>}
+                        {errors.hesp_IdHerramental && <p className="text-red-500 text-sm">{errors.hesp_IdHerramental.message}</p>}
                     </div>
 
                     <div>
                         <label htmlFor={"NombreTipoHerramental"} className="block p-2">Uso del Herramental</label>
-                        <select {...register("hesp_IdTipoHerramental")} className="w-full p-2 border round ed">
+                        <select {...register("hesp_IdTipoHerramental")} className="w-full p-2 border rounded">
                             <option value=""> Seleccione tipo de uso </option>
-                            {tipo_herramental?.map((typeh: number) => (
+                            {tipo_herramental?.map((typeh: any) => (
                                 <option value={typeh.th_IdTipoHerramental} key={typeh.th_IdTipoHerramental}>{typeh.th_NombreTipoHerramental}</option>
                             ))}
                         </select>
-                        {errors.th_IdTipoHerramental && <p className="text-red-500 text-sm">{errors.th_IdTipoHerramental.message}</p>}
+                        {errors.hesp_IdTipoHerramental && <p className="text-red-500 text-sm">{errors.hesp_IdTipoHerramental.message}</p>}
                     </div>
 
                     <div>
                         <label className="block p-2" htmlFor={"NombreFamilia"} >Familia Herramental</label>
                         <select {...register("hesp_IdFamilia")} className="w-full p-2 border">
                             <option value="">Seleccione Familia</option>
-                            {familias?.map((item: number) => (
+                            {familias?.map((item: any) => (
                                 <option value={item.fa_IdFamilia} key={item.fa_IdFamilia}>{item.fa_NombreFamilia}</option>
                             ))}
                         </select>
-                        {errors.fa_IdFamilia && <p className="text-red-500 text-sm">{errors.fa_IdFamilia.message}</p>}
+                        {errors.hesp_IdFamilia && <p className="text-red-500 text-sm">{errors.hesp_IdFamilia.message}</p>}
 
                     </div>
 
