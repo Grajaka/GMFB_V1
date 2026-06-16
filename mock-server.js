@@ -335,6 +335,20 @@ const server = http.createServer((req, res) => {
                     console.log('[MOCK SERVER] Responding to /api/ubicaciones/ with ID:', mockLocationResponse.uh_IdUbicacionHerr);
                     return sendJSON(201, mockLocationResponse);
 
+                case '/api/diesets/':
+                case '/api/diesets':
+                    const newDieSet = {
+                        di_IdDieSet: mockDiesets.length + 100,
+                        di_CodigoDieSet: parsedData.di_CodigoDieSet || "NEW-DS",
+                        di_Dimensiones: parsedData.di_Dimensiones || "0*0",
+                        di_IdPiso: Number(parsedData.di_IdPiso),
+                        di_IdEstanteria: Number(parsedData.di_IdEstanteria),
+                        di_IdUbicacionDieset: Number(parsedData.di_IdUbicacionDieset),
+                    };
+                    mockDiesets.push(newDieSet);
+                    console.log('[MOCK SERVER] Created new mock DieSet:', newDieSet);
+                    return sendJSON(201, newDieSet);
+
                 // Final mold creation post endpoint (CreateUbic.tsx)
                 case '/api/herramental_especifico/':
                 case '/api/herramental_especifico':

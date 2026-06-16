@@ -4,12 +4,14 @@ import NavBar from "../Components/NavBar.jsx";
 import useAxios from "../Hooks/useAxios/IndexAx.js";
 import { useEffect, useState } from "react";
 import DropDown from "../Components/DropDown.js";
-import { UbicacionHerramentalSchema } from "../Hooks/Validators/Ubication.js";
+import { DieSetWizardSchema } from "../Hooks/Validators/Ubication.js";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, useBlocker } from "react-router-dom";
 import { useFormData } from "../Hooks/FormNewHerrContext/HerrContext.js";
 import { z } from "zod";
+import schemeDieSet from "../assets/Schemas/DieSetSchema.png";
+import defaultScheme from "../assets/Schemas/default-scheme.png";
 
 type DropdownItem = {
     id?: number;
@@ -17,29 +19,26 @@ type DropdownItem = {
     nombre?: string;
     es_IdEstanteria?: number;
     es_NombreEstanteria?: string;
-    pi_NumeroPiso?: number | string;
+    di_NumeroPiso?: number | string;
     pi_DescripcionPiso?: string;
-    eh_IdEstadoHerr?: number;
-    eh_NombreEstado?: string;
+    pi_IdPiso?: number;
     di_IdDieSet?: number;
     di_CodigoDieSet?: number | string;
     di_Dimensiones?: string;
     di_IdPiso?: number;
     di_IdEstanteria?: number;
     di_IdUbicacionDieset?: number;
+    pi_NumeroPiso?: number;
 };
 
-type FormValues = z.infer<typeof UbicacionHerramentalSchema>;
+type FormValues = z.infer<typeof DieSetWizardSchema>;
 
-export function CreateUbic() {
-    const { formData, updateFormData, clearForm } = useFormData();
+export function CreateUbicDieSet() {
+    const { formData, updateFormData } = useFormData();
     const navigate = useNavigate();
-    const { response, fetchData, CreatePost } = useAxios();
+    const { fetchData, CreatePost } = useAxios();
     const [pisos, setPisos] = useState<DropdownItem[]>([]);
     const [estanterias, setEstanterias] = useState<DropdownItem[]>([]);
-    const [diesets, setDiesets] = useState<DropdownItem[]>([]);
-
-    //const [maquinas, pisos, estanterias, actividades, diesets] = response || [[], [], [], [], []];
 
     const {
         register,
@@ -47,34 +46,24 @@ export function CreateUbic() {
         reset,
         formState: { errors, isDirty },
     } = useForm<FormValues>({
-        resolver: zodResolver(UbicacionHerramentalSchema) as unknown as import("react-hook-form").Resolver<FormValues>,
+        resolver: zodResolver(DieSetWizardSchema) as unknown as import("react-hook-form").Resolver<FormValues>,
         defaultValues: {
-            hesp_IdMaquinaPP: formData.hesp_IdMaquinaPP ?? 1,
-            hesp_IdMaquinaOpc: formData.hesp_IdMaquinaOpc ?? 1,
             uh_NumeroFila: formData.uh_NumeroFila ?? 0,
             uh_NumeroColumna: formData.uh_NumeroColumna ?? 0,
             uh_NumeroPosicion: formData.uh_NumeroPosicion ?? 0,
-            hesp_CantHerramental: formData.hesp_CantHerramental ?? 0,
-            hesp_Observacion: formData.hesp_Observacion ?? "",
-            hesp_IdActividad: formData.hesp_IdActividad ?? 0,
-            hesp_IdEstadoHerr: formData.hesp_IdEstadoHerr ?? 1,
-            eh_IdEstadoHerr: formData.eh_IdEstadoHerr ?? 0,
-            eh_NombreEstado: formData.eh_NombreEstado ?? "",
-            hesp_IdDieSet: formData.hesp_IdDieSet ?? 0,
-            hesp_IdEstanteria: formData.hesp_IdEstanteria ?? 0,
-            es_IdEstanteria: formData.es_IdEstanteria ?? 0,
-            hesp_IdPiso: formData.hesp_IdPiso ?? 0,
+            di_IdEstanteria: formData.di_IdEstanteria ?? 0,
+            di_IdPiso: formData.hesp_IdPiso ?? 0, // Maps hesp_IdPiso from context if user had selected it
             di_CodigoDieSet: formData.di_CodigoDieSet ?? "",
-            di_IdDieSet: formData.di_IdDieSet ?? 0,
+            di_Dimensiones: formData.di_Dimensiones ?? "",
         },
     });
+    const canContinue = true;
 
     useEffect(() => {
         const loadDropdownData = async () => {
             const urls = [
                 "/api/estanterias/",
                 "/api/pisos/",
-                "/api/diesets/",
             ];
 
             const results = await fetchData({ url: urls });
@@ -87,10 +76,8 @@ export function CreateUbic() {
                     return [];
                 };
 
-
                 setEstanterias(getData(results[0]));
                 setPisos(getData(results[1]));
-                setDiesets(getData(results[2]));
             }
         };
 
@@ -100,7 +87,7 @@ export function CreateUbic() {
     // Warn on page reload or closing the tab
     useEffect(() => {
         const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-            const hasUnsavedChanges = isDirty || Object.keys(formData).length > 0;
+            const hasUnsavedChanges = isDirty;
             if (hasUnsavedChanges) {
                 e.preventDefault();
                 e.returnValue = "";
@@ -109,13 +96,13 @@ export function CreateUbic() {
 
         window.addEventListener("beforeunload", handleBeforeUnload);
         return () => window.removeEventListener("beforeunload", handleBeforeUnload);
-    }, [isDirty, formData]);
+    }, [isDirty]);
 
     // Intercept back button or SPA navigation
-    const wizardRoutes = ["/CreateGnrlv1", "/CreateMeasures", "/CreateUbic", "/CreateUbicDieSet"];
     const blocker = useBlocker(({ nextLocation }) => {
+        const wizardRoutes = ["/CreateGnrlv1", "/CreateMeasures", "/CreateUbic", "/CreateUbicDieSet"];
         const leavingWizard = !wizardRoutes.some(route => nextLocation.pathname.startsWith(route));
-        const hasData = isDirty || Object.keys(formData).length > 0;
+        const hasData = isDirty;
         return leavingWizard && hasData;
     });
 
@@ -138,12 +125,12 @@ export function CreateUbic() {
                 uh_NumeroFila: data.uh_NumeroFila,
                 uh_NumeroColumna: data.uh_NumeroColumna,
                 uh_NumeroPosicion: data.uh_NumeroPosicion,
-                hesp_IdEstanteria: data.hesp_IdEstanteria,
+                hesp_IdEstanteria: data.di_IdEstanteria,
             };
 
             let ubicacionId;
             try {
-                const resUbic = await CreatePost("/api/ubicacionesDieSet/", "POST", ubicacionData);
+                const resUbic = await CreatePost("/api/ubicaciones/", "POST", ubicacionData);
                 ubicacionId = resUbic?.uh_IdUbicacionHerr;
             } catch (err: any) {
                 // Check if the backend complains that this specific combination already exists
@@ -186,103 +173,152 @@ export function CreateUbic() {
                 throw new Error("Can't get IdUbicacionHerr");
             }
 
-            const finalData = {
-                ...formData,
-                ...data,
-                hesp_IdUbicacionHerr: ubicacionId,
+            const dieSetData = {
+                di_CodigoDieSet: data.di_CodigoDieSet,
+                di_Dimensiones: data.di_Dimensiones,
+                di_IdPiso: data.di_IdPiso,
+                di_IdEstanteria: data.di_IdEstanteria,
+                di_IdUbicacionDieset: ubicacionId,
             };
 
-            updateFormData(data);
+            const res = await CreatePost("/api/diesets/", "POST", dieSetData);
+            console.log("Created DieSet Response:", res);
 
-            const res = await CreatePost("/api/herramental_especifico/", "POST", finalData);
-            console.log("Created Herramental Response:", res);
+            const createdDieSetId = res?.di_IdDieSet || res?.id || res?.data?.di_IdDieSet || res?.data?.id;
 
-            const recordId = res?.hesp_IdHerramentalEspecifico || res?.id || res?.data?.hesp_IdHerramentalEspecifico || res?.data?.id;
-
-            if (recordId) {
-                clearForm();
+            if (createdDieSetId) {
+                // Update wizard progress context and pre-select the newly created DieSet
+                updateFormData({
+                    hesp_IdDieSet: createdDieSetId,
+                    uh_NumeroFila: data.uh_NumeroFila,
+                    uh_NumeroColumna: data.uh_NumeroColumna,
+                    uh_NumeroPosicion: data.uh_NumeroPosicion,
+                    hesp_IdPiso: data.di_IdPiso,
+                    hesp_IdEstanteria: data.di_IdEstanteria,
+                });
                 reset();
-                navigate(`/VisualMold/${recordId}`);
+                navigate("/CreateUbic");
             } else {
-                alert("Herramental creado pero no se encontró un ID en la respuesta. ¡Verifica la consola!");
+                alert("DieSet creado pero no se encontró un ID en la respuesta. ¡Verifica la consola!");
             }
         } catch (error) {
-            console.error("Error creating herramental:", error);
+            console.error("Error creating DieSet:", error);
+            alert("Ocurrió un error al crear el DieSet.");
         }
     };
 
     return (
         <>
             <NavBar />
-            <h1>Ubicación</h1>
-
-            <form onSubmit={handleSubmit(onFinalSubmit, (formErrors) => console.log("Validation errors:", formErrors))}>
-                <div className="grid grid-cols-[3,fr] grid-rows-[repeat(5,fr)] gap-4 w-screen h-screen m-5">
-
-                    <div className="grid col-span-3 row-start-2 p-2 card-form">
-                        <div className="col-start-1 row-start-2">
-                            <label className="block p-2">Piso</label>
-                            <select {...register("hesp_IdPiso")}>
-                                <option value="" hidden>Piso</option>
-                                {pisos.map((piso, index) => (
-                                    <option value={piso.pi_NumeroPiso ?? index} key={piso.pi_NumeroPiso ?? index}>
-                                        {piso.pi_DescripcionPiso ?? ""}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-
-                        <div className="col-start-2 row-start-2">
-                            <label className="block p-2">Estante</label>
-                            <select {...register("hesp_IdEstanteria")}>
-                                <option value="" hidden>Estante</option>
-                                {estanterias?.map((estante, index) => (
-                                    <option value={estante.es_IdEstanteria ?? index} key={estante.es_IdEstanteria ?? index}>
-                                        {estante.es_NombreEstanteria ?? ""}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-
-                        <div className="col-start-3 row-start-2">
-                            <label className="block p-2">Columna</label>
-                            <DropDown length={31} start={0} {...register("uh_NumeroColumna")} />
-                        </div>
-
-                        <div className="col-start-4 row-start-2">
-                            <label className="block p-2">Fila</label>
-                            <DropDown length={8} start={0} {...register("uh_NumeroFila")} />
-                        </div>
-
-                        <div className="col-start-5 row-start-2">
-                            <label className="block p-2">Posición</label>
-                            <DropDown length={22} start={0} {...register("uh_NumeroPosicion")} />
-                        </div>
-
-                        <div className="col-start-1 row-start-3">
-                            <label className="block p-2">Código DieSet</label>
-                            <select {...register("di_IdDieSet")}>
-                                <option value="" hidden>Código DieSet</option>
-                                {diesets?.map((dieSet, index) => (
-                                    <option value={dieSet.di_IdDieSet ?? index} key={dieSet.di_IdDieSet ?? index}>
-                                        {dieSet.di_CodigoDieSet ?? ""}
-                                    </option>
-                                ))}
-                            </select>
-
-                        </div>
-
-
-                        <button type="button" className="btn btn-orange col-start-1 row-start-4" onClick={() => navigate(-1)}>
-                            Atrás
-                        </button>
-
-                        <button type="submit" className="btn btn-orange col-start-4 row-start-4">
-                            Finalizar
-                        </button>
-                    </div>
+            <div className="max-w-7xl mx-auto p-4 md:p-8 font-['Poppins']">
+                <div className="flex justify-between items-center mb-6">
+                    <h1 className="text-2xl font-bold">Creación de Die-Set</h1>
                 </div>
-            </form>
+
+                <form onSubmit={handleSubmit(onFinalSubmit, (formErrors) => console.log("Validation errors:", formErrors))} className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Left Column: Form Fields */}
+                        <div className="space-y-6 bg-gray-50 p-6 rounded-lg border">
+                            <h1 className="">Información del Die-Set</h1>
+
+                            <div>
+                                <label className="block p-2">Código DieSet</label>
+                                <input
+                                    type="text"
+                                    {...register("di_CodigoDieSet")}
+                                    className="w-full p-2 border rounded bg-white"
+                                />
+                                {errors.di_CodigoDieSet && <p className="text-red-500 text-sm">{errors.di_CodigoDieSet.message}</p>}
+                            </div>
+
+                            <div>
+                                <label className="block p-2 font-bold">Dimensiones</label>
+                                <input
+                                    type="text"
+                                    {...register("di_Dimensiones")}
+                                    className="w-full p-2 border rounded bg-white"
+                                />
+                                {errors.di_Dimensiones && <p className="text-red-500 text-sm">{errors.di_Dimensiones.message}</p>}
+                            </div>
+
+                            <div>
+                                <label className="block p-2 font-bold">Piso</label>
+                                <select {...register("di_IdPiso")} className="w-full p-2 border rounded bg-white">
+                                    <option value="" hidden>Seleccione Piso</option>
+                                    {pisos.map((piso, index) => (
+                                        <option value={piso.pi_NumeroPiso ?? index} key={piso.pi_NumeroPiso ?? index}>
+                                            {piso.pi_DescripcionPiso ?? ""}
+                                        </option>
+                                    ))}
+                                </select>
+                                {errors.di_IdPiso && <p className="text-red-500 text-sm">{errors.di_IdPiso.message}</p>}
+                            </div>
+
+                            <div>
+                                <label className="block p-2 font-bold">Estante</label>
+                                <select {...register("di_IdEstanteria")} className="w-full p-2 border rounded bg-white">
+                                    <option value="" hidden>Seleccione Estante</option>
+                                    {estanterias?.map((estante, index) => (
+                                        <option value={estante.es_IdEstanteria ?? index} key={estante.es_IdEstanteria ?? index}>
+                                            {estante.es_NombreEstanteria ?? ""}
+                                        </option>
+                                    ))}
+                                </select>
+                                {errors.di_IdEstanteria && <p className="text-red-500 text-sm">{errors.di_IdEstanteria.message}</p>}
+                            </div>
+
+                            <div className="grid grid-cols-3 gap-4">
+                                <div>
+                                    <label className="block p-2 font-bold">Fila</label>
+                                    <DropDown length={8} start={0} {...register("uh_NumeroFila")} className="w-full p-2 border rounded bg-white" />
+                                    {errors.uh_NumeroFila && <p className="text-red-500 text-sm">{errors.uh_NumeroFila.message}</p>}
+                                </div>
+                                <div>
+                                    <label className="block p-2 font-bold">Columna</label>
+                                    <DropDown length={31} start={0} {...register("uh_NumeroColumna")} className="w-full p-2 border rounded bg-white" />
+                                    {errors.uh_NumeroColumna && <p className="text-red-500 text-sm">{errors.uh_NumeroColumna.message}</p>}
+                                </div>
+                                <div>
+                                    <label className="block p-2 font-bold">Posición</label>
+                                    <DropDown length={22} start={0} {...register("uh_NumeroPosicion")} className="w-full p-2 border rounded bg-white" />
+                                    {errors.uh_NumeroPosicion && <p className="text-red-500 text-sm">{errors.uh_NumeroPosicion.message}</p>}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Right Column: Schema representation */}
+                        <div className="bg-gray-50 p-6 rounded-lg border flex flex-col items-center justify-center">
+                            <h3 className="font-bold text-sm text-gray-700 mb-2 uppercase">Esquema Técnico de Referencia</h3>
+                            <img
+                                src={schemeDieSet}
+                                alt="Esquema DieSet"
+                                className="max-h-64 object-contain border p-2 bg-white rounded"
+                                onError={(e) => {
+                                    e.currentTarget.src = defaultScheme;
+                                }}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Form Buttons */}
+                    <div className="flex justify-between items-center pt-6 border-t">
+                        <button
+                            type="button"
+                            onClick={() => navigate(-1)}
+                            className="btn btn-orange"
+                        >
+                            Volver
+                        </button>
+
+                        <button type="submit"
+                            disabled={!canContinue}
+                            className={`btn ${canContinue ? 'btn-orange' : 'bg-gray-400 cursor-not-allowed'}`}>
+                            Guardar DieSet
+                        </button>
+
+                    </div>
+                </form>
+            </div>
         </>
     );
 }

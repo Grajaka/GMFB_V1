@@ -1,56 +1,37 @@
 import '../styles/globals.css'
 import * as React from "react";
 import NavBar from "../Components/NavBar.jsx";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import useAxios from "../Hooks/useAxios/IndexAx.js";
 import familiasSchema from "../assets/Schemas/familias.schema.json" with { type: "json" };
 import QRCode from "react-qr-code";
+import useToolImage from "../Hooks/useToolImage.js";
+import useToolQrCode from "../Hooks/useToolQrCode.js";
 
 
 
 export default function VisualMold() {
     const { id } = useParams();
+    const navigate = useNavigate();
     const { fetchData } = useAxios();
     const [toolData, setToolData] = useState<Record<string, any> | null>(null);
-    const [imageUrl, setImageUrl] = useState<string>("");
-    const ImgHerrUrlBase = "http://10.1.1.14/media/imagenes/";
-    //const ImgHerrUrlBase = import.meta.env.VITE_MEDIA_URL || "http://localhost:8000/media/imagenes/";
 
     useEffect(() => {
         const loadData = async () => {
             const resTool = await fetchData({ url: `/api/herramental_especifico/${id}/` });
             if (resTool) {
                 setToolData(resTool);
-                if (resTool.hesp_IdImagen) {
-                    const resDoc = await fetchData({
-                        url: `http://10.1.1.14:8000/api/documents/${resTool.hesp_IdImagen}/`
-                        //url: `/api/documents/${resTool.hesp_IdImagen}/` //-------------------------------------------------------------------------------------
-                    });
-                    if (resDoc && resDoc.archivo) {
-                        setImageUrl(`${ImgHerrUrlBase}${resDoc.archivo.split('/').pop()}`);
-                    }
-                }
             }
         };
         if (id) loadData();
     }, [id]);
 
+    const { imageUrl } = useToolImage(toolData?.hesp_IdImagen);
+
     const familyInfo = toolData ? familiasSchema[toolData.codigo_familia as keyof typeof familiasSchema] : null;
 
-    const qrCodeValue = toolData
-        ? [
-            `Codigo herramental: ${toolData.hesp_CodigoHerramental || ""}`,
-            `código alterno: ${toolData.hesp_CodigoAlterno || ""}`,
-            `CantHerramental: ${toolData.hesp_CantHerramental || ""}`,
-            `Maq. principal: ${toolData.nombre_maquina_pp || ""}`,
-            `maq. Opcional: ${toolData.nombre_maquina_opc || ""}`,
-            `DieSet: ${toolData.codigo_dieset || ""}`,
-            `Ubicación Molde: Piso ${toolData.numero_piso || ""}, Estante ${toolData.nombre_estanteria || ""}, Fila ${toolData.numero_fila || ""}, Celda ${toolData.numero_columna || ""}, Posición ${toolData.numero_posicion || ""}`,
-            `EstadoMolde: ${toolData.nombre_estado_Herr || ""}`,
-            `hesp_Descripcion1: ${toolData.hesp_Descripcion1 || ""}`
-        ].join("\n")
-        : "";
+    const qrCodeValue = useToolQrCode(toolData);
 
 
 
@@ -69,7 +50,7 @@ export default function VisualMold() {
                     <h1 className="text-2xl font-bold">
                         Hoja de vida molde {toolData.hesp_CodigoHerramental}
                     </h1>
-                    <button className="btn btn-orange" onClick={() => navigate(`/EditGeneral/${id}`)}>
+                    <button className="btn btn-orange" onClick={() => navigate(`/EditHerramental/${id}`)}>
                         Editar
                     </button>
                 </div>
@@ -90,7 +71,7 @@ export default function VisualMold() {
                             <div className={`lightGrey p-3 space-y-1`}>
                                 <p><strong>N° Molde:</strong> {toolData.hesp_IdHerramentalEspecifico}</p>
                                 <p><strong>Codigo Alterno:</strong> {toolData.hesp_CodigoAlterno}</p>
-                                <p><strong>Tipo de Herramental:</strong>{toolData.nombre_tipo_herramental}</p>
+                                <p><strong>Tipo de Herramental:</strong>{toolData.nombre_tipo_herra}</p>
                                 <p><strong>Familia:</strong> {toolData.nombre_familia}</p>
                                 <p><strong>Cantidad de Herramental:</strong> {toolData.hesp_CantHerramental}</p>
                             </div>
@@ -102,7 +83,7 @@ export default function VisualMold() {
                             </div>
                         </div>
 
-                        <button className={`orange} text-white py-2 px-4 rounded w-max mt-4 text-sm font-bold uppercase`}>
+                        <button className={`btn-orange text-white py-2 px-4 rounded w-max mt-4 text-sm font-bold uppercase`}>
                             Historial producción
                         </button>
                     </div>
@@ -150,6 +131,10 @@ export default function VisualMold() {
                             <div className="mt-4">
                                 <p className="font-bold">Actividad Pendiente: </p>
                                 <p className="ml-4 text-gray-600">{toolData.nombre_actividad}</p>
+                                <h4 className="text-sm font-bold border-b border-gray-500 pb-1 mb-2">Observaciones:</h4>
+                                <p className="text-xs leading-relaxed italic">
+                                    {toolData.hesp_Observacion || "Sin observaciones adicionales registradas en el sistema."}
+                                </p>
                             </div>
                         </div>
 

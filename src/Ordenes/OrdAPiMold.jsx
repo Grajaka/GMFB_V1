@@ -93,7 +93,7 @@ export default function Orders() {
         getFilteredRowModel: getFilteredRowModel(),
         initialState: {
             pagination: {
-                pageSize: 5,
+                pageSize: 30,
             },
         },
         getSortedRowModel: getSortedRowModel(),

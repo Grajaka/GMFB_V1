@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 import NavBar from "../Components/NavBar.jsx";
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import LoadingAnimation from "../Components/LoadingAnimation.jsx";
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 //***********************************************************
 
 import useAxios from "../Hooks/useAxios/IndexAx.js";
@@ -28,6 +28,7 @@ import Pagination from "@mui/material/Pagination";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { zodResolver } from "@hookform/resolvers/zod";
+
 
 /*
 const initialMoldes = [
@@ -69,12 +70,20 @@ const initialMoldes = [
 
 
 
+import useToolImage from "../Hooks/useToolImage.js";
+import useToolQrCode from "../Hooks/useToolQrCode.js";
+import QRCode from "react-qr-code";
+
+
 export default function VisualGnrlv2() {
     const { response, error, status, fetchData } = useAxios(); //Response stores the data fetched from API
     const [globalFilter, setGlobalFilter] = useState('');
     const [sorting, setSorting] = useState([])
     const isLoading = status === FETCH_STATUS.LOADING;
     const navigate = useNavigate();
+
+
+
 
     useEffect(() => {
         fetchData({
@@ -101,6 +110,22 @@ export default function VisualGnrlv2() {
             header: 'state',
             accessorKey: 'nombre_estado_Herr',
         },
+        {
+            header: 'image',
+            accessorKey: 'hesp_IdImagen',
+            cell: ({ getValue }) => {
+                const idImagen = getValue() as number;
+                return <TableImage idImagen={idImagen} />;
+            }
+        },
+
+        {
+            header: 'QR',
+            cell: ({ row }) => {
+                const toolData = row.original;
+                return <TableQrCode toolData={toolData} />;
+            }
+        }
 
     ], []);
 
@@ -148,6 +173,7 @@ export default function VisualGnrlv2() {
         <>
             <NavBar />
             <div className="grid grid-cols-[0.45fr_1.9fr]">
+
                 <div>
                     <FilterForm globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} />
                 </div>
@@ -156,6 +182,7 @@ export default function VisualGnrlv2() {
                     <Link to="/CreateGnrlv1">
                         <button className="btn btn-blue">Nuevo molde</button>
                     </Link>
+
 
                     {/* RENDER THE LIST USING TANSTACK ROW MODEL */}
 
@@ -172,7 +199,7 @@ export default function VisualGnrlv2() {
                     {/* MUI PAGINATION INTEGRATION */}
 
                     <div className="mt-8 flex justify-center pb-10">
-                        <Stack spacing={2}>
+                        <Stack spacing={10}>
                             <Pagination
                                 count={table.getPageCount()}
                                 page={table.getState().pagination.pageIndex + 1}
@@ -184,31 +211,78 @@ export default function VisualGnrlv2() {
                         </Stack>
                     </div>
                 </div>
-            </div>
+            </div >
         </>
     )
 }
 
 
 
+function TableImage({ idImagen }: { idImagen: number | null | undefined }) {
+    const { imageUrl } = useToolImage(idImagen);
+    if (!idImagen) return <span>Sin imagen</span>;
+    return (
+        <img
+            src={imageUrl || "./default-image.svg"}
+            alt="Herramental"
+            className="w-24 h-24 object-cover"
+        />
+    );
+}
+
+function TableQrCode({ toolData }: { toolData: any }) {
+    const qrCodeValue = useToolQrCode(toolData);
+    return (
+        <div className="w-16 h-16 bg-white flex items-center justify-center border border-gray-300 rounded p-1">
+            <QRCode
+                value={qrCodeValue}
+                size={500}
+                style={{ height: "100%", maxWidth: "200%", width: "200%" }}
+            />
+        </div>
+    );
+}
+
 function Molde({ molde, onNavigate }) {
+    const { imageUrl } = useToolImage(molde.hesp_IdImagen);
+    const qrCodeValue = useToolQrCode(molde);
+
     return (
         <li className="molde-list-item" onClick={onNavigate} style={{ cursor: 'pointer' }}>
-            <Avatar
-                alt={molde.hesp_CodigoHerramental}
-                src={`http://localhost:8000/media/imagenes/sample-tool.jpg`}
-                sx={{ width: 200, height: 200 }}
-                variant="rounded"
-                className="col-start-1 row-span-4 items-center"
-            />
+            <div className="col-start-1 row-span-5 self-center justify-self-center w-auto h-auto object-cover">
+                <Avatar
+                    alt={molde.hesp_CodigoHerramental}
+                    src={imageUrl || "./default-image.svg"}
+                    sx={{ width: 200, height: 200 }}
+                    variant="rounded"
+                    className=" col-start-1 row-span-5 items-center m-5"
+                />
+            </div>
 
-            <h3 className="col-start-3 row-start-1 justify-self-start bg-blue-50">{molde.hesp_CodigoHerramental}</h3>
+
+            <h3 className="col-start-3 row-start-1 justify-self-start">{molde.hesp_CodigoHerramental}</h3>
             <p className="col-start-3 row-start-2 row-end-3 justify-self-start bg-blue-50">Estado: {molde.nombre_estado_Herr} </p>
             <p className="col-start-3 row-start-3 row-end-4 justify-self-start bg-blue-50">Máquina: {molde.nombre_maquina_pp} </p>
+            <p className="col-start-3 row-start-4 row-end-5 justify-self-start bg-blue-50">Código alterno: {molde.hesp_CodigoAlterno} </p>
+
+            <div className="col-start-2 row-span-5 self-center justify-self-center w-auto h-auto bg-white flex items-center justify-center border border-gray-300 rounded  shadow-sm m-2">
+                <QRCode
+                    value={qrCodeValue}
+                    size={200}
+                    style={{ height: "100%", maxWidth: "100%", width: "100%" }}
+                />
+            </div>
 
             <div className="col-start-5 row-span-2 m-2 bg-blue-50">
                 <Link to="/CreateActivity">
                     <ChecklistIcon />
+                </Link>
+
+                {/* Agrega el botón de editar con el icono */}
+                <Link to={`/EditHerramental/${molde.hesp_IdHerramentalEspecifico}`}>
+                    <button>
+                        <ModeEditIcon sx={{ color: blue[500], cursor: 'pointer' }} />
+                    </button>
                 </Link>
             </div>
         </li>

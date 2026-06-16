@@ -76,6 +76,20 @@ const useAxios = () => {
 
     }
 
+    const patchPost = async (url, data) => {
+        setLoading(true);
+        setError("");
+        try {
+            const result = await axiosInstance.patch(url, data);
+            setResponse(result.data);
+        } catch (error) {
+            setError(error.response ? error.response.data : error.message);
+        } finally {
+            setLoading(false);
+        }
+
+    }
+
     const fetchData = useCallback(async (args) => {
         const { url, method = "GET", data = null, params = null } =
             typeof args === 'string' ? { url: args } : args;
@@ -135,6 +149,7 @@ const useAxios = () => {
         fetchData,
         CreatePost,
         updatePost,
+        patchPost,
     }
 };
 export default useAxios;

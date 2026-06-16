@@ -21,6 +21,10 @@ export const UbicacionHerramentalSchema = z.object({
     hesp_IdDieSet: z.coerce.number().int().min(1, "Seleccione una máquina principal"),
     di_CodigoDieSet: z.string().max(10),
     di_IdDieSet: z.coerce.number().int().optional().nullable(),
+    di_IdEstanteria: z.coerce.number().int().min(1, "Seleccione un estantería"),
+    di_IdPiso: z.coerce.number().int().min(1, "Seleccione un piso"),
+    di_Dimensiones: z.string().max(10),
+    di_IdUbicacionDieset: z.coerce.number().int().optional().nullable(),
 
 
     // State and Stock
@@ -56,3 +60,15 @@ export const PageUbicSchema = UbicacionHerramentalSchema.pick({
     //di_IdDieSet: true,
 
 });
+
+export const DieSetWizardSchema = z.object({
+    di_CodigoDieSet: z.string().min(1, "El código es requerido").max(10, "Máximo 10 caracteres"),
+    di_Dimensiones: z.string().min(1, "Las dimensiones son requeridas").max(10, "Máximo 10 caracteres"),
+    di_IdPiso: z.coerce.number().int().min(1, "Seleccione un piso"),
+    di_IdEstanteria: z.coerce.number().int().min(1, "Seleccione una estantería"),
+    uh_NumeroFila: z.coerce.number().int().min(1, "Requerido"),
+    uh_NumeroColumna: z.coerce.number().int().min(1, "Requerido"),
+    uh_NumeroPosicion: z.coerce.number().int().min(1, "Requerido"),
+});
+
+export type DieSetWizardFormData = z.infer<typeof DieSetWizardSchema>;

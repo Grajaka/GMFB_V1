@@ -1,6 +1,6 @@
-import {type ChangeEvent, useEffect, useRef, useState} from "react";
+import { type ChangeEvent, useEffect, useRef, useState } from "react";
 import useAxios from "../Hooks/useAxios/IndexAx.js";
-import {useFormData} from "../Hooks/FormNewHerrContext/HerrContext.js";
+import { useFormData } from "../Hooks/FormNewHerrContext/HerrContext.js";
 import {
     FileAudio,
     FileIcon,
@@ -15,25 +15,29 @@ import {
 import axios from "axios";
 
 type FileWithProgress = {
-    id:string;
+    id: string;
     file: File;
     progress: number;
     uploaded: boolean;
 };
 
-export default function FilesUpload(){
+type FilesUploadProps = {
+    onUploadSuccess?: (id: number) => void;
+};
+
+export default function FilesUpload({ onUploadSuccess }: FilesUploadProps) {
     const [files, setFiles] = useState<FileWithProgress[]>([]);
     const [uploading, setUploading] = useState(false);
-    const {CreatePost, loading, status, response} = useAxios();
-    const {formData, updateFormData} = useFormData(); //Access to context
+    const { CreatePost, loading, status, response } = useAxios();
+    const { formData, updateFormData } = useFormData(); //Access to context
     const inputRef = useRef<HTMLInputElement>(null);
 
 
     function handleFileSelect(e: ChangeEvent<HTMLInputElement>) {
-        if(!e.target.files?.length){
+        if (!e.target.files?.length) {
             return;
         }
-        const newFiles = Array.from(e.target.files).map((file)=>({
+        const newFiles = Array.from(e.target.files).map((file) => ({
             file,
             progress: 0,
             uploaded: false,
@@ -46,76 +50,76 @@ export default function FilesUpload(){
         }
     }
 
-/*async function handleUpload() {
-        if (files.length === 0 || uploading) {
-            return;
-        }
-        setUploading(true);
-        const uploadPromises = files.map(async (fileWithProgress) => {
-            const formData = new FormData();
-            formData.append('file', fileWithProgress.file);
-
-            try{
-                await axios.post('http://localhost:3000/upload', formData, {
-                    onUploadProgress: (progressEvent) => {
-                        const total = progressEvent.total || 1;
-                        const progress = Math.round(
-                            (progressEvent.loaded * 100) / total || 1
-                        );
-                        setFiles((prevFiles) =>
-                            prevFiles.map((file) =>
-                                file.id === fileWithProgress.id
-                                    ? {...file, progress}
-                                    : file,
-                            )
-                        );
-                    },
-                });
-
-                setFiles((prevFiles) =>
-                    prevFiles.map((file) =>
-                        file.id === fileWithProgress.id
-                            ? {...file, uploaded: true}
-                            : file,
-                    ),
-                );
-            }catch (error){
-                console.error('Error uploading file:', error);
+    /*async function handleUpload() {
+            if (files.length === 0 || uploading) {
+                return;
             }
-        });
+            setUploading(true);
+            const uploadPromises = files.map(async (fileWithProgress) => {
+                const formData = new FormData();
+                formData.append('file', fileWithProgress.file);
+    
+                try{
+                    await axios.post('http://localhost:3000/upload', formData, {
+                        onUploadProgress: (progressEvent) => {
+                            const total = progressEvent.total || 1;
+                            const progress = Math.round(
+                                (progressEvent.loaded * 100) / total || 1
+                            );
+                            setFiles((prevFiles) =>
+                                prevFiles.map((file) =>
+                                    file.id === fileWithProgress.id
+                                        ? {...file, progress}
+                                        : file,
+                                )
+                            );
+                        },
+                    });
+    
+                    setFiles((prevFiles) =>
+                        prevFiles.map((file) =>
+                            file.id === fileWithProgress.id
+                                ? {...file, uploaded: true}
+                                : file,
+                        ),
+                    );
+                }catch (error){
+                    console.error('Error uploading file:', error);
+                }
+            });
+    
+            await Promise.all(uploadPromises);
+            setUploading(false);
+        }*/
+    //-------------------------------------------------------------------------------------------------------------------
+    const handleUpload = async (e?: React.MouseEvent) => {
+        if (e) e.preventDefault();
+        if (files.length === 0 || uploading) return; //Avoid sending all form data without uploading file
 
-        await Promise.all(uploadPromises);
-        setUploading(false);
-    }*/
-//-------------------------------------------------------------------------------------------------------------------
-        const handleUpload = async (e?: React.MouseEvent) => {
-            if (e) e.preventDefault();
-            if (files.length === 0 || uploading) return; //Avoid sending all form data without uploading file
+        let lastUploadedId: number | null = null; // Cambiamos el array por una variable simple
 
-            let lastUploadedId: number | null = null; // Cambiamos el array por una variable simple
+        //const newIds: number[] = []; //Array to save images Ids
 
-            //const newIds: number[] = []; //Array to save images Ids
+        for (const fileItem of files) {
+            if (fileItem.uploaded) continue;
 
-            for (const fileItem of files) {
-                if (fileItem.uploaded) continue;
+            // 1. Create FormData object
+            const formDataBody = new FormData();
 
-                // 1. Create FormData object
-                const formDataBody = new FormData();
-
-                // 2. Append all selected files
-                // Note: The key "file" or "document" should match what your Django backend expects
-                formDataBody.append("archivo", fileItem.file);
-                formDataBody.append("nombre", fileItem.file.name);
-                formDataBody.append("descripcion", "Uploaded by user");
+            // 2. Append all selected files
+            // Note: The key "file" or "document" should match what your Django backend expects
+            formDataBody.append("archivo", fileItem.file);
+            formDataBody.append("nombre", fileItem.file.name);
+            formDataBody.append("descripcion", "Uploaded by user");
 
 
-                try {
-                    // 3. Call CreatePost from IndexAx.js
-                    // CreatePost (url, method, data, config)
-                    const response = await CreatePost(
-                        "/api/documents/",
-                        "POST",
-                        formDataBody,
+            try {
+                // 3. Call CreatePost from IndexAx.js
+                // CreatePost (url, method, data, config)
+                const response = await CreatePost(
+                    "/api/documents/",
+                    "POST",
+                    formDataBody,
                     {   // 4. config
                         onUploadProgress: (progressEvent) => {
                             const total = progressEvent.total || fileItem.file.size;
@@ -127,44 +131,47 @@ export default function FilesUpload(){
                     }
                 );
 
-                        //Extract id_imagen from Serializar.py backend
-                    if (response && response.id_imagen) {
-                        lastUploadedId = response.id_imagen; // Guardamos el ID más reciente
-                       // newIds.push(response.id_imagen);
-                    }
-                    //Update progress bar
-                    setFiles(prev =>prev.map(f =>
-                    f.id === fileItem.id ? {...f, uploaded: true, progress: 100} : f
-                    ));
-                } catch (err) {
-                    console.error("Upload failed of: ", fileItem.id, err);
+                //Extract id_imagen from Serializar.py backend
+                if (response && response.id_imagen) {
+                    lastUploadedId = response.id_imagen; // Guardamos el ID más reciente
+                    // newIds.push(response.id_imagen);
                 }
-            }//Save in HerContext
-            if (lastUploadedId) {
-                updateFormData({
-                    ...formData,
-                    hesp_IdImagen: lastUploadedId, // Enviamos el entero, no un arreglo
-                });
-
-/*            if (newIds.length > 0) {
-                updateFormData({
-                    ...formData,
-                    hesp_IdImagen: [...(formData.hesp_IdImagen || []), ...newIds],
-                });*/
-                console.log("Imagen guardada en Contexto:", lastUploadedId);
-                //console.log("Images saved in Context", newIds);
+                //Update progress bar
+                setFiles(prev => prev.map(f =>
+                    f.id === fileItem.id ? { ...f, uploaded: true, progress: 100 } : f
+                ));
+            } catch (err) {
+                console.error("Upload failed of: ", fileItem.id, err);
             }
-        };
+        }//Save in HerContext
+        if (lastUploadedId) {
+            updateFormData({
+                ...formData,
+                hesp_IdImagen: lastUploadedId, // Enviamos el entero, no un arreglo
+            });
+            if (onUploadSuccess) {
+                onUploadSuccess(lastUploadedId);
+            }
 
-//---------------------------------------------------------------------------------------------------------------------
+            /*            if (newIds.length > 0) {
+                            updateFormData({
+                                ...formData,
+                                hesp_IdImagen: [...(formData.hesp_IdImagen || []), ...newIds],
+                            });*/
+            console.log("Imagen guardada en Contexto:", lastUploadedId);
+            //console.log("Images saved in Context", newIds);
+        }
+    };
 
-function removeFile(id: string) {
+    //---------------------------------------------------------------------------------------------------------------------
+
+    function removeFile(id: string) {
         setFiles((prevFiles) => prevFiles.filter((file) => file.id !== id));
-}
+    }
 
-function handleClear(){
+    function handleClear() {
         setFiles([]);
-}
+    }
 
 
     return (
@@ -179,11 +186,11 @@ function handleClear(){
                 <ActionButtons
                     disabled={files.length === 0 || uploading}
                     onUpload={handleUpload}
-                    onClear={handleClear}/>
+                    onClear={handleClear} />
             </div>
-            <FileList files={files} onRemove={removeFile} uploading={uploading}/>
+            <FileList files={files} onRemove={removeFile} uploading={uploading} />
 
-    </div>
+        </div>
     );
 }
 
@@ -194,9 +201,9 @@ type FileInputProps = {
     onFileSelect: (e: ChangeEvent<HTMLInputElement>) => void;
 };
 
-function FileInput({inputRef, disabled, onFileSelect}: FileInputProps) {
+function FileInput({ inputRef, disabled, onFileSelect }: FileInputProps) {
 
-    return(
+    return (
         <>
             <input
                 type="file"
@@ -209,10 +216,10 @@ function FileInput({inputRef, disabled, onFileSelect}: FileInputProps) {
             />
             <label htmlFor="file-upload" className="btn btn-orange">
                 <Plus size={18} />
-                Select Files
+                Seleccionar archivos
             </label>
         </>
-        );
+    );
 }
 
 //----------------------------------------------------------------------------------------------
@@ -222,8 +229,8 @@ type ActionButtonsProps = {
     onClear: () => void;
 };
 
-function ActionButtons({disabled, onUpload, onClear}: ActionButtonsProps) {
-    return(
+function ActionButtons({ disabled, onUpload, onClear }: ActionButtonsProps) {
+    return (
         <div className="flex items-center gap-2">
             <button
                 type="button"
@@ -232,10 +239,10 @@ function ActionButtons({disabled, onUpload, onClear}: ActionButtonsProps) {
                 className="btn btn-orange"
             >
                 <Upload size={18} />
-                Upload
+                Cargar
             </button>
             <button onClick={onClear} className="btn btn-orange"
-            disabled={disabled}>
+                disabled={disabled}>
                 <Trash2 size={18} />
                 Eliminar todo
             </button>
@@ -244,22 +251,22 @@ function ActionButtons({disabled, onUpload, onClear}: ActionButtonsProps) {
 }
 //------------------------------------------------------------------------------------------------
 
-type FileListProps ={
+type FileListProps = {
     files: FileWithProgress[];
     onRemove: (id: string) => void;
     uploading: boolean;
 };
 
-function FileList({files, onRemove, uploading}: FileListProps) {
+function FileList({ files, onRemove, uploading }: FileListProps) {
     if (files.length === 0) {
         return
-        <p>No files selected</p>;
+        <p>No hay archivos seleccionados</p>;
         return null;
     }
 
     return (
         <div className="space-y-2">
-            <h3 className="text-lg font-medium">Files:</h3>
+            <h3 className="text-lg font-medium">Archivos:</h3>
             <div className="flex flex-col gap-2">
                 {files.map((file) => (
                     <FileItem
@@ -280,33 +287,33 @@ type FileItemProps = {
     uploading: boolean;
 };
 
-function FileItem ({file, onRemove, uploading}: FileItemProps){
+function FileItem({ file, onRemove, uploading }: FileItemProps) {
     const Icon = getFileIcon(file.file.type);
 
-    return(
+    return (
         <div className="space-y-2 rounded-md bg-gray-50 p-4">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                    <Icon size={40} className="text-gray-500"/>
+                    <Icon size={40} className="text-gray-500" />
                     <div className="flex flex-col">
                         <span className="text-sm font-medium text-gray-900">{file.file.name}</span>
                         <div className="flex items-center gap-1 text-xs text-gray-500">
                             <span>{formatFileSize(file.file.size)}</span>
                             <span>*</span>
-                            <span>{file.file.type || 'Unknown type' }</span>
+                            <span>{file.file.type || 'Unknown type'}</span>
                         </div>
                     </div>
                 </div>
-                {!uploading &&(
-                    <button onClick={()=> onRemove(file.id)} className="text-gray-500 hover:text-gray-700">
-                        <X size={16} className={ "text-white"}/>
+                {!uploading && (
+                    <button onClick={() => onRemove(file.id)} className="text-gray-500 hover:text-gray-700">
+                        <X size={16} className={"text-white"} />
                     </button>
                 )}
             </div>
             <div className="text-right text-xs">
-                {file.uploaded ? 'Completed' : `${Math.round(file.progress)}%`}
+                {file.uploaded ? 'Completado' : `${Math.round(file.progress)}%`}
             </div>
-            <ProgressBar progress={file.progress}/>
+            <ProgressBar progress={file.progress} />
         </div>
     );
 }
@@ -319,11 +326,11 @@ type ProgressBarProps = {
     progress: number;
 };
 
-function ProgressBar({progress}: ProgressBarProps){
-    return(
+function ProgressBar({ progress }: ProgressBarProps) {
+    return (
         <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
             <div className="bg-blue-600 h-2.5 rounded-full"
-                 style={{width: `${progress}%`}}>
+                style={{ width: `${progress}%` }}>
             </div>
         </div>
     )
@@ -331,7 +338,7 @@ function ProgressBar({progress}: ProgressBarProps){
 
 
 const getFileIcon = (mimeType: string) => {
-    if(mimeType.startsWith('image/')) return FileImage;
+    if (mimeType.startsWith('image/')) return FileImage;
     if (mimeType.startsWith('video/')) return FileVideo;
     if (mimeType.startsWith('audio/')) return FileAudio;
     if (mimeType === 'application/pdf') return FileText;

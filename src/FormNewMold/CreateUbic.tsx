@@ -224,7 +224,7 @@ export function CreateUbic() {
             <h1>Ubicación</h1>
 
             <form onSubmit={handleSubmit(onFinalSubmit, (formErrors) => console.log("Validation errors:", formErrors))}>
-                <div className="grid grid-cols-[3,fr] grid-rows-[repeat(5,fr)] gap-4 w-screen h-screen m-5">
+                <div className="grid grid-cols-[3,fr] grid-rows-[(5,5,5,2)] gap-4 w-screen h-screen m-5">
                     <div className="grid p-2 col-span-2 row-start-1 card-form">
                         <div className="col-start-1 row-start-1">
                             <label className="block p-2">N° máquina PP</label>
@@ -302,6 +302,10 @@ export function CreateUbic() {
                             </select>
 
                         </div>
+
+                        <div className="col-start-2 row-start-3">
+                            <button onClick={() => navigate("/CreateUbicDieSet")} className="btn btn-orange p-2">Crear DieSet</button>
+                        </div>
                     </div>
 
                     <div className="grid p-2 col-span-2 row-start-3 card-form">
@@ -338,12 +342,14 @@ export function CreateUbic() {
                             />
                         </div>
                     </div>
+                </div>
+                <div className="col-span-3 flex justify-between m-8">
 
-                    <button type="button" className="btn btn-orange col-start-1 row-start-4" onClick={() => navigate(-1)}>
+                    <button type="button" className="btn btn-orange" onClick={() => navigate(-1)}>
                         Atrás
                     </button>
 
-                    <button type="submit" className="btn btn-orange col-start-4 row-start-4">
+                    <button type="submit" className="btn btn-orange">
                         Finalizar
                     </button>
                 </div>

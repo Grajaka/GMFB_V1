@@ -285,12 +285,12 @@ export default function CreateGnrlv1() {
                             size={256}
                         />
                     </div>
-                    <h4 className="font-bold"> Código Estándar</h4  >
+
                     <div>
-                        <p className="uppercase m-0 text-2xl text-blueFB"> {HerramentalCode}</p>
-                        <input type={"hidden"} {...register("hesp_CodigoHerramental")} value={HerramentalCode} />
+
+                        {/* <input type={"hidden"} {...register("hesp_CodigoHerramental")} value={HerramentalCode} /> */}
                         <div className="mt-4">
-                            <span className="text-blueFB font-bold">Código Final:</span>
+                            <h4 className="text-blueFB font-bold">Código Final:</h4>
                             <h2 className="text-3xl font-mono">{baseCodePrefix}{nextConsecutive}</h2>
                         </div>
                         {/* <input
