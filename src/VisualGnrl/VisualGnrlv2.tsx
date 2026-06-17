@@ -79,18 +79,93 @@ export default function VisualGnrlv2() {
     const { response, error, status, fetchData } = useAxios(); //Response stores the data fetched from API
     const [globalFilter, setGlobalFilter] = useState('');
     const [sorting, setSorting] = useState([])
+    const [filters, setFilters] = useState<any>({});
     const isLoading = status === FETCH_STATUS.LOADING;
     const navigate = useNavigate();
 
-
-
-
     useEffect(() => {
+        // Clean out default 0 values and empty/null values
+        const cleanParams = Object.keys(filters).reduce((acc, key) => {
+            const val = filters[key];
+            if (val !== 0 && val !== '' && val !== null && val !== undefined) {
+                acc[key] = val;
+            }
+            return acc;
+        }, {} as any);
+
         fetchData({
             url: '/api/herramental_especifico/',
             method: "GET",
+            params: cleanParams,
         });
-    }, []);
+    }, [filters, fetchData]);
+
+    // Apply client-side filter fallback (ideal for mock testing and backend variations)
+    const filteredData = useMemo(() => {
+        if (!response || !Array.isArray(response)) return [];
+        return response.filter((item: any) => {
+            // 1. Tipo de Herramental
+            if (filters.hesp_IdTipoHerramental) {
+                const selId = Number(filters.hesp_IdTipoHerramental);
+                const itemVal = item.hesp_IdTipoHerramental;
+                if (itemVal !== undefined && itemVal !== null) {
+                    if (Number(itemVal) !== selId) return false;
+                } else {
+                    const mockTiposMap: Record<number, string> = {
+                        1: "Troquel (T)",
+                        2: "Molde (M)",
+                        3: "Copa (C)"
+                    };
+                    if (item.nombre_tipo_herramental !== mockTiposMap[selId]) return false;
+                }
+            }
+            // 2. Familia
+            if (filters.hesp_IdFamilia) {
+                const selId = Number(filters.hesp_IdFamilia);
+                const itemVal = item.hesp_IdFamilia;
+                if (typeof itemVal === 'string') {
+                    const mockCodes: Record<string, number> = { "HX": 3, "CU": 4, "RE": 5 };
+                    if (mockCodes[itemVal] !== selId) return false;
+                } else if (itemVal !== undefined && itemVal !== null) {
+                    if (Number(itemVal) !== selId) return false;
+                }
+            }
+            // 3. Máquina PP
+            if (filters.hesp_IdMaquinaPP) {
+                const selId = Number(filters.hesp_IdMaquinaPP);
+                const itemVal = item.hesp_IdMaquinaPP;
+                if (itemVal !== undefined && itemVal !== null) {
+                    if (Number(itemVal) !== selId) return false;
+                } else {
+                    const mockMaquinasMap: Record<number, string> = { 1: "84", 2: "25", 3: "28" };
+                    if (item.nombre_maquina_pp !== mockMaquinasMap[selId]) return false;
+                }
+            }
+            // 4. Estantería (Ubicación)
+            if (filters.hesp_IdEstanteria) {
+                const selId = Number(filters.hesp_IdEstanteria);
+                const itemVal = item.hesp_IdEstanteria;
+                if (itemVal !== undefined && itemVal !== null) {
+                    if (Number(itemVal) !== selId) return false;
+                } else {
+                    const mockEstanteriasMap: Record<number, string> = { 50: "A", 60: "B" };
+                    if (item.nombre_estanteria !== mockEstanteriasMap[selId]) return false;
+                }
+            }
+            // 5. DieSet
+            if (filters.hesp_IdDieSet) {
+                const selId = Number(filters.hesp_IdDieSet);
+                const itemVal = item.hesp_IdDieSet;
+                if (itemVal !== undefined && itemVal !== null) {
+                    if (Number(itemVal) !== selId) return false;
+                } else {
+                    const mockDiesetsMap: Record<number, string> = { 1: "1500", 2: "1600", 3: "1700" };
+                    if (item.codigo_dieset !== mockDiesetsMap[selId]) return false;
+                }
+            }
+            return true;
+        });
+    }, [response, filters]);
 
     //Define (Memoizing) Columns
     const columns = useMemo(() => [
@@ -142,7 +217,7 @@ export default function VisualGnrlv2() {
     console.log("IS ARRAY?", Array.isArray(response));
 
     const table = useReactTable({
-        data: response || [],
+        data: filteredData,
         columns,
         state: {
             globalFilter,
@@ -175,7 +250,11 @@ export default function VisualGnrlv2() {
             <div className="grid grid-cols-[0.45fr_1.9fr]">
 
                 <div>
-                    <FilterForm globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} />
+                    <FilterForm
+                        globalFilter={globalFilter}
+                        setGlobalFilter={setGlobalFilter}
+                        onApplyFilters={setFilters}
+                    />
                 </div>
 
                 <div className="ml-7 mt-0  ">

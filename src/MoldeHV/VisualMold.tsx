@@ -77,8 +77,8 @@ export default function VisualMold() {
                             </div>
                             <div className="p-3 space-y-1">
                                 <p><strong>Máquinas compatibles</strong></p>
-                                <p><strong>N° Maq. Principal:</strong> {toolData.nombre_maquina_pp}</p>
-                                <p><strong>N° Maq. Opcional:</strong> {toolData.nombre_maquina_opc}</p>
+                                <p><strong>N° Maq. Principal:</strong> {toolData.numero}</p>
+                                <p><strong>N° Maq. Opcional:</strong> {toolData.numero}</p>
                                 <p><strong>Die-Set:</strong> {toolData.codigo_dieset}</p>
                             </div>
                         </div>

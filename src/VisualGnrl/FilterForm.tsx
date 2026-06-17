@@ -15,9 +15,19 @@ const FilterFormSchema = HerramentalModelSchema.pick({
     hesp_IdMaquinaPP: true,
     hesp_IdEstanteria: true,
     hesp_IdDieSet: true,
+    nombre_maquina_pp: true,
+    nombre_maquina_opc: true,
 });
 
-export default function FilterForm({ globalFilter, setGlobalFilter }: { globalFilter: string; setGlobalFilter: (value: string) => void }) {
+export default function FilterForm({
+    globalFilter,
+    setGlobalFilter,
+    onApplyFilters
+}: {
+    globalFilter?: string;
+    setGlobalFilter?: (value: string) => void;
+    onApplyFilters?: (filters: any) => void;
+}) {
     const { useGetLookups } = useHerramental();
     const selectId = useId();
 
@@ -31,18 +41,20 @@ export default function FilterForm({ globalFilter, setGlobalFilter }: { globalFi
             hesp_IdFamilia: 0,
             hesp_IdMaquinaPP: 0,
             hesp_IdEstanteria: 0,
+            nombre_maquina_opc: "",
+            nombre_maquina_pp: "",
             hesp_IdDieSet: 0,
         },
     });
-
-
 
     // 2. Estado de carga global (opcional)
     const isLoading = tipos.isLoading || familias.isLoading || maquinas.isLoading || estanterias.isLoading;
 
     const onSubmit = (data: any) => {
         console.log("Filtros Aplicados:", data);
-
+        if (onApplyFilters) {
+            onApplyFilters(data);
+        }
     };
 
     return (
@@ -50,7 +62,9 @@ export default function FilterForm({ globalFilter, setGlobalFilter }: { globalFi
             onSubmit={handleSubmit(onSubmit)}
             className="bg-orangeFB h-full hidden sm:block flex-col gap-3 px-5 py-6 shadow-3xl"
         >
-            <Search globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} />
+            {setGlobalFilter && (
+                <Search globalFilter={globalFilter ?? ''} setGlobalFilter={setGlobalFilter} />
+            )}
 
             {isLoading ? (
                 <p className="text-white text-xs animate-pulse">Cargando filtros...</p>
@@ -76,11 +90,12 @@ export default function FilterForm({ globalFilter, setGlobalFilter }: { globalFi
                             <option value="">Seleccionar máquina</option>
                             {Array.isArray(maquinas.data) && maquinas.data.map((maq: any) => (
                                 <option key={maq.id} value={maq.id}>
-                                    {maq.numero ?? `Máquina ${maq.id}`}
+                                    {maq.numero ?? `Máquina ${maq.numero}`}
                                 </option>
                             ))}
                         </select>
                     </div>
+
                     {/* DieSets */}
                     <div>
                         <label className="block p-2 text-sm font-bold">DieSet</label>
@@ -89,6 +104,19 @@ export default function FilterForm({ globalFilter, setGlobalFilter }: { globalFi
                             {Array.isArray(dieSets.data) && dieSets.data.map((die: any) => (
                                 <option key={die.di_IdDieSet} value={die.di_IdDieSet}>
                                     {die.di_CodigoDieSet ?? `DieSet ${die.di_IdDieSet}`}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* Familia */}
+                    <div>
+                        <label className="block p-2 text-sm font-bold">Familia</label>
+                        <select onChange={(e) => setValue('hesp_IdFamilia', Number(e.target.value))}>
+                            <option value="">Seleccionar familia</option>
+                            {Array.isArray(familias.data) && familias.data.map((fam: any) => (
+                                <option key={fam.fa_IdFamilia} value={fam.fa_IdFamilia}>
+                                    {fam.fa_NombreFamilia}
                                 </option>
                             ))}
                         </select>

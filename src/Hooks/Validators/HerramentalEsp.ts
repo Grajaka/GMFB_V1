@@ -18,6 +18,7 @@ export const HerramentalModelSchema = z.object({
     hesp_Observacion: z.string().min(0).max(100).nullable(),
     hesp_IdImagen: z.number().int().nullable().optional(), // Define que es un entero
 
+
     // Specific technical attributes
     hesp_NumNariz: z.number().int().max(255).nullable(),
     hesp_NumCopas: z.number().int().max(255).nullable(),
