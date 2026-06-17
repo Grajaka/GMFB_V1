@@ -14,6 +14,7 @@ const FilterFormSchema = HerramentalModelSchema.pick({
     hesp_IdFamilia: true,
     hesp_IdMaquinaPP: true,
     hesp_IdEstanteria: true,
+    hesp_IdDieSet: true,
 });
 
 export default function FilterForm({ globalFilter, setGlobalFilter }: { globalFilter: string; setGlobalFilter: (value: string) => void }) {
@@ -21,7 +22,7 @@ export default function FilterForm({ globalFilter, setGlobalFilter }: { globalFi
     const selectId = useId();
 
     // 1. Obtenemos todos los datos usando el nuevo hook
-    const { tipos, familias, maquinas, estanterias } = useGetLookups();
+    const { tipos, familias, maquinas, estanterias, dieSets } = useGetLookups();
 
     const { handleSubmit, setValue } = useForm({
         resolver: zodResolver(FilterFormSchema),
@@ -30,12 +31,10 @@ export default function FilterForm({ globalFilter, setGlobalFilter }: { globalFi
             hesp_IdFamilia: 0,
             hesp_IdMaquinaPP: 0,
             hesp_IdEstanteria: 0,
+            hesp_IdDieSet: 0,
         },
     });
-    console.log("estanterias.data:", estanterias.data);
-    console.log("maquinas.data:", maquinas.data);
-    console.log("tipos.data:", tipos.data);
-    console.log("familias.data:", familias.data);
+
 
 
     // 2. Estado de carga global (opcional)
@@ -78,6 +77,18 @@ export default function FilterForm({ globalFilter, setGlobalFilter }: { globalFi
                             {Array.isArray(maquinas.data) && maquinas.data.map((maq: any) => (
                                 <option key={maq.id} value={maq.id}>
                                     {maq.numero ?? `Máquina ${maq.id}`}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    {/* DieSets */}
+                    <div>
+                        <label className="block p-2 text-sm font-bold">DieSet</label>
+                        <select onChange={(e) => setValue('hesp_IdDieSet', Number(e.target.value))}>
+                            <option value="">Seleccionar DieSet</option>
+                            {Array.isArray(dieSets.data) && dieSets.data.map((die: any) => (
+                                <option key={die.di_IdDieSet} value={die.di_IdDieSet}>
+                                    {die.di_CodigoDieSet ?? `DieSet ${die.di_IdDieSet}`}
                                 </option>
                             ))}
                         </select>
