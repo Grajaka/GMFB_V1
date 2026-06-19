@@ -63,7 +63,7 @@ export default function VisualMold() {
                         <img
                             src={imageUrl || "./default-image.svg"}
                             alt={toolData.hesp_CodigoHerramental}
-                            className="w-full aspect-[3/4] object-cover border border-gray-300 rounded"
+                            className="w-full aspect-[3/4] object-contain border border-gray-300 rounded"
                         />
 
 
@@ -77,8 +77,8 @@ export default function VisualMold() {
                             </div>
                             <div className="p-3 space-y-1">
                                 <p><strong>Máquinas compatibles</strong></p>
-                                <p><strong>N° Maq. Principal:</strong> {toolData.numero}</p>
-                                <p><strong>N° Maq. Opcional:</strong> {toolData.numero}</p>
+                                <p><strong>N° Maq. Principal:</strong> {toolData.nombre_maquina_pp}</p>
+                                <p><strong>N° Maq. Opcional:</strong> {toolData.nombre_maquina_opc}</p>
                                 <p><strong>Die-Set:</strong> {toolData.codigo_dieset}</p>
                             </div>
                         </div>
@@ -112,7 +112,7 @@ export default function VisualMold() {
                                 <p><strong>Descripción: </strong> {toolData.descripcion_piso} </p>
                                 <p><strong>Estante:</strong> {toolData.nombre_estanteria}</p>
                                 <p><strong>Fila:</strong> {toolData.numero_fila}</p>
-                                <p><strong>Celda:</strong> {toolData.numero_columna}</p>
+                                <p><strong>Columna:</strong> {toolData.numero_columna}</p>
                                 <p><strong>Posición:</strong> {toolData.numero_posicion}</p>
                                 <p><strong>Existencia:</strong> 1</p>
                             </div>
@@ -121,7 +121,7 @@ export default function VisualMold() {
                                 <p><strong>Piso:</strong> 1</p>
                                 <p><strong>Estante:</strong> A</p>
                                 <p><strong>Fila:</strong> 2</p>
-                                <p><strong>Celda:</strong> 5</p>
+                                <p><strong>Columna:</strong> 5</p>
                                 <p><strong>Posición:</strong> 3</p>
                             </div>
                         </div>
@@ -180,9 +180,9 @@ export default function VisualMold() {
                                     </div>
                                     <div>
                                         <p className="text-xs font-bold">Fecha de elaboración:</p>
-                                        <p>05/06/1998</p>
+                                        <p>No registrada</p>
                                         <p className="text-xs font-bold mt-1">Material:</p>
-                                        <p>AI6</p>
+                                        <p>No registrado</p>
                                     </div>
                                 </div>
 
@@ -191,11 +191,9 @@ export default function VisualMold() {
                                         <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.5-7 3 10 13 11 13 11z"></path></svg>
                                     </div>
                                     <div>
-                                        <p className="text-xs font-bold text-gray-300">Tratamiento térmico:</p>
+                                        <p className="text-xs font-bold text-gray-300">Dureza:</p>
                                         <div className="mt-2 space-y-1">
                                             <div className="h-2 w-24 bg-gray-500 rounded"></div>
-                                            <div className="h-2 w-32 bg-gray-500 rounded"></div>
-                                            <div className="h-2 w-20 bg-gray-500 rounded"></div>
                                         </div>
                                     </div>
                                 </div>

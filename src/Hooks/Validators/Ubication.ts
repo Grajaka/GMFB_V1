@@ -64,11 +64,11 @@ export const PageUbicSchema = UbicacionHerramentalSchema.pick({
 export const DieSetWizardSchema = z.object({
     di_CodigoDieSet: z.string().min(1, "El código es requerido").max(10, "Máximo 10 caracteres"),
     di_Dimensiones: z.string().min(1, "Las dimensiones son requeridas").max(10, "Máximo 10 caracteres"),
-    di_IdPiso: z.coerce.number().int().min(1, "Seleccione un piso"),
-    di_IdEstanteria: z.coerce.number().int().min(1, "Seleccione una estantería"),
-    uh_NumeroFila: z.coerce.number().int().min(1, "Requerido"),
-    uh_NumeroColumna: z.coerce.number().int().min(1, "Requerido"),
-    uh_NumeroPosicion: z.coerce.number().int().min(1, "Requerido"),
+    di_IdPiso: z.coerce.number().int().min(0, "Seleccione un piso"),
+    di_IdEstanteria: z.coerce.number().int().min(0, "Seleccione una estantería"),
+    uh_NumeroFila: z.coerce.number().int().min(0, "Requerido"),
+    uh_NumeroColumna: z.coerce.number().int().min(0, "Requerido"),
+    uh_NumeroPosicion: z.coerce.number().int().min(0, "Requerido"),
 });
 
-export type DieSetWizardFormData = z.infer<typeof DieSetWizardSchema>;
+export type DieSetWizardFormData = z.infer<typeof DieSetWizardSchema>;

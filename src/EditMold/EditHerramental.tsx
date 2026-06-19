@@ -29,6 +29,14 @@ const EditHerramentalSchema = z.object({
     hesp_C: z.coerce.number().nullable().optional(),
     hesp_D: z.coerce.number().nullable().optional(),
     hesp_E: z.coerce.number().nullable().optional(),
+    hesp_F: z.coerce.number().nullable().optional(),
+    hesp_G: z.coerce.number().nullable().optional(),
+    hesp_H: z.coerce.number().nullable().optional(),
+    hesp_J: z.coerce.number().nullable().optional(),
+    hesp_L: z.coerce.number().nullable().optional(),
+    hesp_P: z.coerce.number().nullable().optional(),
+    hesp_Q: z.coerce.number().nullable().optional(),
+    hesp_T: z.coerce.number().nullable().optional(),
     hesp_Observacion: z.string().nullable().optional(),
 
     // Ubicación
@@ -232,17 +240,22 @@ export default function EditHerramental() {
     const HerramentalCode = `${baseCodePrefix}${consecutiveCode}`;
 
     // Sync HerramentalCode and Description
+    // (Disabled code regeneration logic as editing the code is disabled)
+    /*
     useEffect(() => {
         if (HerramentalCode && HerramentalCode !== "00") {
             setValue("hesp_CodigoHerramental", HerramentalCode);
         }
     }, [HerramentalCode, setValue]);
+    */
 
     useEffect(() => {
         setValue("hesp_Descripcion1", description);
     }, [description, setValue]);
 
     // Fetch next consecutive if categories change
+    // (Disabled as categories are now disabled in edit view)
+    /*
     useEffect(() => {
         if (hesp_IdHerramental && hesp_IdTipoHerramental && hesp_IdFamilia) {
             // If it matches the original data, keep the original consecutive
@@ -271,6 +284,7 @@ export default function EditHerramental() {
             fetchNext();
         }
     }, [hesp_IdHerramental, hesp_IdTipoHerramental, hesp_IdFamilia, generalData, fetchData, setValue]);
+    */
 
     // Dynamic Measures Scheme Information
     const familyCode = watched.fa_CodigoFamilia || 'nan';
@@ -362,7 +376,7 @@ export default function EditHerramental() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label className="block p-2 font-bold" htmlFor="NombreHerramental">Categoría Herramental</label>
-                                <select {...register("hesp_IdHerramental")} className="w-full p-2 border rounded bg-white">
+                                <select {...register("hesp_IdHerramental")} disabled className="w-full p-2 border rounded bg-gray-100 cursor-not-allowed">
                                     <option value="">Seleccione Herramental</option>
                                     {dropdowns.herramentales?.map((item: any) => (
                                         <option value={item.he_IdHerramental} key={item.he_IdHerramental}>{item.he_NombreHerramental}</option>
@@ -373,7 +387,7 @@ export default function EditHerramental() {
 
                             <div>
                                 <label htmlFor="NombreTipoHerramental" className="block p-2 font-bold">Uso del Herramental</label>
-                                <select {...register("hesp_IdTipoHerramental")} className="w-full p-2 border rounded bg-white">
+                                <select {...register("hesp_IdTipoHerramental")} disabled className="w-full p-2 border rounded bg-gray-100 cursor-not-allowed">
                                     <option value="">Seleccione tipo de uso</option>
                                     {dropdowns.tipo_herramental?.map((typeh: any) => (
                                         <option value={typeh.th_IdTipoHerramental} key={typeh.th_IdTipoHerramental}>{typeh.th_NombreTipoHerramental}</option>
@@ -384,7 +398,7 @@ export default function EditHerramental() {
 
                             <div>
                                 <label className="block p-2 font-bold" htmlFor="NombreFamilia">Familia Herramental</label>
-                                <select {...register("hesp_IdFamilia")} className="w-full p-2 border rounded bg-white">
+                                <select {...register("hesp_IdFamilia")} disabled className="w-full p-2 border rounded bg-gray-100 cursor-not-allowed">
                                     <option value="">Seleccione Familia</option>
                                     {dropdowns.familias?.map((item: any) => (
                                         <option value={item.fa_IdFamilia} key={item.fa_IdFamilia}>{item.fa_NombreFamilia}</option>
@@ -404,10 +418,10 @@ export default function EditHerramental() {
                             </div>
                         </div>
 
-                        <div className="mt-6 p-4 bg-white rounded border">
+                        {/*  <div className="mt-6 p-4 bg-white rounded border">
                             <span className="text-gray-500 font-bold block text-sm">Código Estándar Generado:</span>
                             <span className="text-2xl font-mono text-blue-700 font-bold">{HerramentalCode}</span>
-                        </div>
+                        </div>*/}
                     </div>
 
                     {/* SECTION 2: IMAGE */}
@@ -542,7 +556,7 @@ export default function EditHerramental() {
                             </div>
 
                             <div>
-                                <label className="block p-2 font-bold">Columna (Celda)</label>
+                                <label className="block p-2 font-bold">Columna</label>
                                 <DropDown length={31} start={0} {...register("uh_NumeroColumna")} className="w-full p-2 border rounded bg-white" />
                                 {errors.uh_NumeroColumna && <p className="text-red-500 text-sm">{errors.uh_NumeroColumna.message}</p>}
                             </div>

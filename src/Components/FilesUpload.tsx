@@ -1,6 +1,7 @@
-import { type ChangeEvent, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import useAxios from "../Hooks/useAxios/IndexAx.js";
 import { useFormData } from "../Hooks/FormNewHerrContext/HerrContext.js";
+import { useDropzone } from "react-dropzone";
 import {
     FileAudio,
     FileIcon,
@@ -30,68 +31,22 @@ export default function FilesUpload({ onUploadSuccess }: FilesUploadProps) {
     const [uploading, setUploading] = useState(false);
     const { CreatePost, loading, status, response } = useAxios();
     const { formData, updateFormData } = useFormData(); //Access to context
-    const inputRef = useRef<HTMLInputElement>(null);
 
-
-    function handleFileSelect(e: ChangeEvent<HTMLInputElement>) {
-        if (!e.target.files?.length) {
-            return;
-        }
-        const newFiles = Array.from(e.target.files).map((file) => ({
+    const onDrop = (acceptedFiles: File[]) => {
+        const newFiles = acceptedFiles.map((file) => ({
             file,
             progress: 0,
             uploaded: false,
             id: file.name,
         }));
-        setFiles([...files, ...newFiles]);
+        setFiles((prev) => [...prev, ...newFiles]);
+    };
 
-        if (inputRef.current) {
-            inputRef.current.value = '';
-        }
-    }
+    const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
+        onDrop,
+        disabled: uploading,
+    });
 
-    /*async function handleUpload() {
-            if (files.length === 0 || uploading) {
-                return;
-            }
-            setUploading(true);
-            const uploadPromises = files.map(async (fileWithProgress) => {
-                const formData = new FormData();
-                formData.append('file', fileWithProgress.file);
-    
-                try{
-                    await axios.post('http://localhost:3000/upload', formData, {
-                        onUploadProgress: (progressEvent) => {
-                            const total = progressEvent.total || 1;
-                            const progress = Math.round(
-                                (progressEvent.loaded * 100) / total || 1
-                            );
-                            setFiles((prevFiles) =>
-                                prevFiles.map((file) =>
-                                    file.id === fileWithProgress.id
-                                        ? {...file, progress}
-                                        : file,
-                                )
-                            );
-                        },
-                    });
-    
-                    setFiles((prevFiles) =>
-                        prevFiles.map((file) =>
-                            file.id === fileWithProgress.id
-                                ? {...file, uploaded: true}
-                                : file,
-                        ),
-                    );
-                }catch (error){
-                    console.error('Error uploading file:', error);
-                }
-            });
-    
-            await Promise.all(uploadPromises);
-            setUploading(false);
-        }*/
-    //-------------------------------------------------------------------------------------------------------------------
     const handleUpload = async (e?: React.MouseEvent) => {
         if (e) e.preventDefault();
         if (files.length === 0 || uploading) return; //Avoid sending all form data without uploading file
@@ -175,50 +130,49 @@ export default function FilesUpload({ onUploadSuccess }: FilesUploadProps) {
 
 
     return (
-        <div>
-            <h3>Cargar archivos</h3>
-            <div className="flex flex-col gap-2">
-                <FileInput
-                    inputRef={inputRef}
+        <div className="space-y-4">
+            <label className="block p-2 font-bold">Cargar archivos</label>
+
+            <div
+                {...getRootProps()}
+                className={`border-2 border-dashed rounded-lg p-6 text-center transition cursor-pointer flex flex-col items-center justify-center gap-3 min-h-[160px] ${isDragActive
+                    ? "border-orange-500 bg-orange-50"
+                    : "border-gray-300 bg-gray-50 hover:bg-gray-100"
+                    }`}
+            >
+                <input {...getInputProps()} />
+                <Upload className={`h-8 w-8 ${isDragActive ? "text-orange-500 animate-bounce" : "text-gray-400"}`} />
+                <div className="space-y-1">
+                    <p className="text-sm font-medium text-gray-700">
+                        {isDragActive
+                            ? "Suelte los archivos aquí..."
+                            : "Arrastre y suelte sus archivos aquí, o haga clic para seleccionar"}
+                    </p>
+                    <p className="text-xs text-gray-500">Soporta imágenes, PDFs, videos y audios</p>
+                </div>
+
+                <button
+                    type="button"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        open();
+                    }}
                     disabled={uploading}
-                    onFileSelect={handleFileSelect}
-                />
-                <ActionButtons
-                    disabled={files.length === 0 || uploading}
-                    onUpload={handleUpload}
-                    onClear={handleClear} />
+                    className="btn btn-orange flex items-center gap-2 mt-2"
+                >
+                    <Plus size={18} />
+                    Seleccionar archivos
+                </button>
             </div>
-            <FileList files={files} onRemove={removeFile} uploading={uploading} />
 
-        </div>
-    );
-}
-
-//-------------------------------------------------------------------------------------
-type FileInputProps = {
-    inputRef: React.RefObject<HTMLInputElement | null>;
-    disabled: boolean;
-    onFileSelect: (e: ChangeEvent<HTMLInputElement>) => void;
-};
-
-function FileInput({ inputRef, disabled, onFileSelect }: FileInputProps) {
-
-    return (
-        <>
-            <input
-                type="file"
-                ref={inputRef}
-                onChange={onFileSelect}
-                multiple
-                className="hidden"
-                id="file-upload"
-                disabled={disabled}
+            <ActionButtons
+                disabled={files.length === 0 || uploading}
+                onUpload={handleUpload}
+                onClear={handleClear}
             />
-            <label htmlFor="file-upload" className="btn btn-orange">
-                <Plus size={18} />
-                Seleccionar archivos
-            </label>
-        </>
+
+            <FileList files={files} onRemove={removeFile} uploading={uploading} />
+        </div>
     );
 }
 

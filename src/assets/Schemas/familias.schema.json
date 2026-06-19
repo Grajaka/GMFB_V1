@@ -169,14 +169,14 @@
     ]
   },
   "AV": {
-    "Familia": "AVELLANADONOHEX",
+    "Familia": "AVELLANADORANURADO",
     "CodFamilia": "AV",
-    "EsquemaFamilia": "AVELLANADONOHEX",
+    "EsquemaFamilia": "AVELLANADORANURADO",
     "Literals": [
       "A",
       "B",
-      "F",
-      "G"
+      "E",
+      "F"
     ]
   },
   "NZ": {
