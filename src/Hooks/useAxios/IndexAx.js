@@ -12,11 +12,15 @@ const useAxios = () => {
 
     const axiosInstance = axios.create({
         baseURL: "http://10.1.1.14:8000"
-        //baseURL: import.meta.env.VITE_API_URL || "http://localhost:8000"
+        //baseURL: "http://localhost:8000"
     });
 
     axiosInstance.interceptors.request.use(
         (config) => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                config.headers.Authorization = `Bearer ${token}`;
+            }
             return config;
         },
         (error) => {
@@ -88,6 +92,19 @@ const useAxios = () => {
             setLoading(false);
         }
 
+    }
+
+    const deletePost = async (url) => {
+        setLoading(true);
+        setError("");
+        try {
+            const result = await axiosInstance.delete(url);
+            setResponse(result.data);
+        } catch (error) {
+            setError(error.response ? error.response.data : error.message);
+        } finally {
+            setLoading(false);
+        }
     }
 
     const fetchData = useCallback(async (args) => {

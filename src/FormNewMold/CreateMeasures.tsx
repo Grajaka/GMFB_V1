@@ -30,7 +30,7 @@ export default function CreateMeasures() {
 
     const onNextPage = (data: any) => {
         updateFormData(data); // Saves Page 2 data to Context + SessionStorage
-        navigate("/CreateUbic"); // Move to Page 2
+        navigate("/CreateMechanical"); // Move to Page 2
         const finalData = { ...formData, ...data };
         console.log("Page 1 and 2 Data:", finalData);
         console.log("url scheme", schemeUrl);

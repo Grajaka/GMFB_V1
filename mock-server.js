@@ -2,7 +2,9 @@
 // -----------------------------------------------------------------------------
 // This script runs a pure Node.js HTTP server to mock the backend endpoints
 // required for the mold creation (FormNewMold) integration testing.
-// No extra dependencies (like Express) are required. Run using: `node mock-server.js`
+// No extra dependencies (like Express) are required. Run using: `node mock-server.js
+// command to start server: `node mock-server.js`
+
 // -----------------------------------------------------------------------------
 
 import http from 'http';
@@ -324,6 +326,33 @@ const server = http.createServer((req, res) => {
             console.log('[MOCK SERVER] Submitted Body Payload:', JSON.stringify(parsedData, null, 2));
 
             switch (pathname) {
+                case '/api/auth/login/':
+                case '/api/auth/login':
+                    const username = parsedData.us_User || parsedData.username || "invitado";
+                    let userType = 3;
+                    let role = "Visualizador";
+
+                    if (username.toLowerCase() === 'admin' || username.toLowerCase() === 'administrador') {
+                        userType = 1;
+                        role = "Administrador";
+                    } else if (username.toLowerCase() === 'operador' || username.toLowerCase() === 'operator') {
+                        userType = 2;
+                        role = "Operador";
+                    }
+
+                    const mockLoginResponse = {
+                        token: "mock-jwt-token-xyz-123",
+                        username: username,
+                        userType: userType,
+                        user: {
+                            id: Math.floor(Math.random() * 1000) + 1,
+                            username: username,
+                            role: role
+                        }
+                    };
+                    console.log(`[MOCK SERVER] Authenticating user "${username}" as userType ${userType} (${role})`);
+                    return sendJSON(200, mockLoginResponse);
+
                 // First POST logic (Create locations: CreateUbic.tsx)
                 case '/api/ubicaciones/':
                 case '/api/ubicaciones':

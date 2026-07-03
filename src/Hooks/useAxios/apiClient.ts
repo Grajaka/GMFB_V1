@@ -1,9 +1,10 @@
-import axios, {type AxiosInstance } from 'axios';
+import axios, { type AxiosInstance } from 'axios';
 
 
 const apiClient: AxiosInstance = axios.create({
     baseURL: "http://10.1.1.14:8000/",
     //import.meta.env.VITE_API_BASE_URL
+    //baseURL: "http://localhost:8000",
     headers: {
         'Content-Type': 'application/json', //APIrest common response json type
     },
@@ -17,6 +18,18 @@ apiClient.interceptors.request.use((config) => {
     }
     return config;
 });
+
+apiClient.interceptors.response.use(
+    (res) => res,
+    (err) => {
+        if (err.response?.status === 401) {
+            // token expired or invalid → force logout
+            localStorage.clear();
+            window.location.href = '/Login';
+        }
+        return Promise.reject(err);
+    }
+);
 
 {/*
 This is a **request interceptor**.

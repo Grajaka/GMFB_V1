@@ -4,9 +4,17 @@ import { Link } from "react-router-dom";
 
 import logo from "../assets/Icons/FBIcon.png"
 import Avatar from "@mui/material/Avatar";
-
+import { useAuth } from "../Context/AuthContext";
+const UserAvatar = ({ username }) => {
+    // Get the first letter, handle cases where the username might be empty
+    const initial = username ? username.charAt(0).toUpperCase() : '?';
+    return initial;
+}
 
 export default function NavBar() {
+    const { user } = useAuth();
+
+
     return (
         <nav className="flex justify-between w-full h-[10%] drop-shadow-md shadow-[4px] bg-[var(--color-blueFB)]">
             <ul className="flex items-center gap-6 text-white drop-shadow-md shadow-[4px] pl-1 m-1.5;">
@@ -18,9 +26,11 @@ export default function NavBar() {
                     to={"/VisualGnrlv2"}>
                     <li className="border-t-2 border-white py-0.5 hover:border-orangeFB"> Home</li>
                 </Link>
-                <Link to={"/CreateGnrlv1"}>
-                    <li className="border-t-2 border-white py-0.5 hover:border-orangeFB">Moldes</li>
-                </Link>
+                {user && user.user_type !== 3 && (
+                    <Link to={"/CreateGnrlv1"}>
+                        <li className="border-t-2 border-white py-0.5 hover:border-orangeFB">Moldes</li>
+                    </Link>
+                )}
                 <Link to={"/OrdAPiMold"}>
                     <li className="border-t-2 border-white py-0.5 hover:border-orangeFB">Ordenes</li>
                 </Link>
@@ -28,7 +38,7 @@ export default function NavBar() {
             <ul className="flex justify-end p-1 gap-6 bg-blueFB hover:border-orangeFB text-white mr-6">
                 <Link to={"/Login"}>
                     <li className=" border-t-blueFB ">
-                        <Avatar sx={{ width: 24, height: 24 }}>K</Avatar>
+                        <Avatar sx={{ width: 24, height: 24 }}>{<UserAvatar username={user?.username} />}</Avatar>
                     </li>
                 </Link>
                 <Link to={"/Login"}>

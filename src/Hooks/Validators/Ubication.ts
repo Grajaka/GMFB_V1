@@ -19,11 +19,11 @@ export const UbicacionHerramentalSchema = z.object({
     es_IdEstanteria: z.coerce.number().int(),
     //Die-set
     hesp_IdDieSet: z.coerce.number().int().min(1, "Seleccione una máquina principal"),
-    di_CodigoDieSet: z.string().max(10),
+    di_CodigoDieSet: z.string().max(10).optional().nullable(),
     di_IdDieSet: z.coerce.number().int().optional().nullable(),
-    di_IdEstanteria: z.coerce.number().int().min(1, "Seleccione un estantería"),
-    di_IdPiso: z.coerce.number().int().min(1, "Seleccione un piso"),
-    di_Dimensiones: z.string().max(10),
+    di_IdEstanteria: z.coerce.number().int().optional().nullable(),
+    di_IdPiso: z.coerce.number().int().optional().nullable(),
+    di_Dimensiones: z.string().max(10).optional().nullable(),
     di_IdUbicacionDieset: z.coerce.number().int().optional().nullable(),
 
 

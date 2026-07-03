@@ -103,7 +103,6 @@ export default function CreateGnrlv1() {
             setValue("fa_NombreFamilia", selectedFamily.fa_NombreFamilia);
         }
     }, [hesp_IdFamilia, familias, setValue]);
-    console.log("fa_CodigoFamilia", fa_CodigoFamilia);
 
 
 
@@ -128,7 +127,7 @@ export default function CreateGnrlv1() {
             )?.fa_NombreFamilia || "...";
 
 
-        console.log("description", fName);
+
         return `Herramental ${hName} tipo ${tName} de la Familia ${fName} con código alterno ${hesp_CodigoAlterno || "..."}`;
     }, [
         hesp_IdHerramental,

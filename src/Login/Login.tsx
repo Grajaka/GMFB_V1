@@ -1,24 +1,39 @@
-import { use, useState } from "react";
+import { useState } from "react";
 import '../styles/globals.css'
 import styles from './Login.module.css';
-import Logo from "../assets/MoldesImg/Logo.png";
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import * as React from "react";
+import { useAuth } from "../Context/AuthContext.js";
 //import side_image from "../assets/MoldesImg/IMG_Login.JPG";
 
-
 export default function Login() {
-
     const [userName, setUser] = useState("");
     const [psw, setPsw] = useState("");
+    const { login, error } = useAuth();
+    const navigate = useNavigate();
+    const [localError, setLocalError] = useState<string | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
+    const handleLoginSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!userName.trim() || !psw.trim()) {
+            setLocalError("Usuario y contraseña son requeridos");
+            return;
+        }
+        setIsSubmitting(true);
+        setLocalError(null);
+        try {
+            await login(userName, psw);
+            navigate("/VisualGnrlv2");
+        } catch (err: any) {
+            setLocalError(err?.message || err?.error || "Error de credenciales o de servidor");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
-
-    function handleLogin() {
-        login(userName, psw)
-    }
     return (
-        <form className={styles.form_login}>
+        <form className={styles.form_login} onSubmit={handleLoginSubmit}>
             <div className=" overflow-hidden h-screen flex items-center justify-center dark-greyFB">
                 <div className="flex shadow-2xl ">
                     <section className={styles.img_forjadora} >
@@ -55,11 +70,18 @@ export default function Login() {
                             focus:border-[#4d4d4d] focus:bg-[#fffff] text-dark-greyFB"
                                 onChange={(e) => setPsw(e.target.value)} value={psw}
                                 type="password" placeholder="Contraseña" />
-
+                            {(localError || error) && (
+                                <div className="text-red-500 text-sm font-medium bg-red-100 p-2 rounded max-w-xs">
+                                    {localError || error}
+                                </div>
+                            )}
                         </div>
-                        <Link to="/VisualGnrlv2" className="flex justify-center gap-2 m-2">
-                            <button className={styles.button_login} onClick={handleLogin}>Acceder</button>
-                        </Link>
+                        <button
+                            className={styles.button_login}
+                            type="submit"
+                            disabled={isSubmitting}>
+                            {isSubmitting ? "Accediendo..." : "Acceder"}
+                        </button>
                     </div>
                 </div>
             </div>

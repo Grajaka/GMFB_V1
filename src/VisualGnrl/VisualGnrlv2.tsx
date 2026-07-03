@@ -10,6 +10,7 @@ import NavBar from "../Components/NavBar.jsx";
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import LoadingAnimation from "../Components/LoadingAnimation.jsx";
 import { useParams, useNavigate } from "react-router-dom";
+import { useAuth } from "../Context/AuthContext.js";
 //***********************************************************
 
 import useAxios from "../Hooks/useAxios/IndexAx.js";
@@ -21,13 +22,10 @@ import {
     getCoreRowModel,
     getPaginationRowModel,
     getFilteredRowModel,
-    flexRender,
     getSortedRowModel,
 } from '@tanstack/react-table';
 import Pagination from "@mui/material/Pagination";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { zodResolver } from "@hookform/resolvers/zod";
+
 
 
 /*
@@ -76,6 +74,7 @@ import QRCode from "react-qr-code";
 
 
 export default function VisualGnrlv2() {
+    const { user } = useAuth();
     const { response, error, status, fetchData } = useAxios(); //Response stores the data fetched from API
     const [globalFilter, setGlobalFilter] = useState('');
     const [sorting, setSorting] = useState([])
@@ -258,9 +257,11 @@ export default function VisualGnrlv2() {
                 </div>
 
                 <div className="ml-7 mt-0  ">
-                    <Link to="/CreateGnrlv1">
-                        <button className="btn btn-blue">Nuevo molde</button>
-                    </Link>
+                    {user && user.user_type !== 3 && (
+                        <Link to="/CreateGnrlv1">
+                            <button className="btn btn-blue">Nuevo molde</button>
+                        </Link>
+                    )}
 
 
                     {/* RENDER THE LIST USING TANSTACK ROW MODEL */}
@@ -323,6 +324,7 @@ function TableQrCode({ toolData }: { toolData: any }) {
 }
 
 function Molde({ molde, onNavigate }) {
+    const { user } = useAuth();
     const { imageUrl } = useToolImage(molde.hesp_IdImagen);
     const qrCodeValue = useToolQrCode(molde);
 
@@ -352,18 +354,20 @@ function Molde({ molde, onNavigate }) {
                 />
             </div>
 
-            <div className="col-start-5 row-span-2 m-2 bg-blue-50">
-                <Link to="/CreateActivity">
-                    <ChecklistIcon />
-                </Link>
+            {user && user.user_type !== 3 && (
+                <div className="col-start-5 row-span-2 m-2 bg-blue-50">
+                    <Link to="/CreateActivity">
+                        <ChecklistIcon />
+                    </Link>
 
-                {/* Agrega el botón de editar con el icono */}
-                <Link to={`/EditHerramental/${molde.hesp_IdHerramentalEspecifico}`}>
-                    <button>
-                        <ModeEditIcon sx={{ color: blue[500], cursor: 'pointer' }} />
-                    </button>
-                </Link>
-            </div>
+                    {/* Agrega el botón de editar con el icono */}
+                    <Link to={`/EditHerramental/${molde.hesp_IdHerramentalEspecifico}`}>
+                        <button>
+                            <ModeEditIcon sx={{ color: blue[500], cursor: 'pointer' }} />
+                        </button>
+                    </Link>
+                </div>
+            )}
         </li>
 
     )

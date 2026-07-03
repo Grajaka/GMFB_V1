@@ -2,6 +2,7 @@ import '../styles/globals.css'
 import * as React from "react";
 import NavBar from "../Components/NavBar.jsx";
 import { useParams, useNavigate } from "react-router-dom";
+import { useAuth } from "../Context/AuthContext.js";
 import { useEffect, useState } from "react";
 import useAxios from "../Hooks/useAxios/IndexAx.js";
 import familiasSchema from "../assets/Schemas/familias.schema.json" with { type: "json" };
@@ -12,6 +13,7 @@ import useToolQrCode from "../Hooks/useToolQrCode.js";
 
 
 export default function VisualMold() {
+    const { user } = useAuth();
     const { id } = useParams();
     const navigate = useNavigate();
     const { fetchData } = useAxios();
@@ -33,6 +35,15 @@ export default function VisualMold() {
 
     const qrCodeValue = useToolQrCode(toolData);
 
+    const handleDelete = (id: string) => {
+        if (confirm("¿Está seguro de que desea eliminar este herramental?")) {
+            fetchData({
+                url: `/api/herramental_especifico/${id}/`,
+                method: "DELETE",
+            });
+        }
+    };
+
 
 
     if (!toolData) return <div className="p-10 text-center">Cargando datos del herramental...</div>;
@@ -50,9 +61,17 @@ export default function VisualMold() {
                     <h1 className="text-2xl font-bold">
                         Hoja de vida molde {toolData.hesp_CodigoHerramental}
                     </h1>
-                    <button className="btn btn-orange" onClick={() => navigate(`/EditHerramental/${id}`)}>
-                        Editar
-                    </button>
+                    {user && user.user_type !== 3 && (
+                        <div className="">
+                            <button className="btn btn-orange" onClick={() => navigate(`/EditHerramental/${id}`)}>
+                                Editar
+                            </button>
+
+                            <button className="flex flex-col btn btn-blue" onClick={() => handleDelete(id)}>
+                                Eliminar Herramental
+                            </button>
+                        </div>
+                    )}
                 </div>
 
                 {/* Main Content Grid */}

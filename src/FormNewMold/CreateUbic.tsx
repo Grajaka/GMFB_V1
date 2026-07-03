@@ -35,12 +35,10 @@ export function CreateUbic() {
 
 
     const [maquinas, setMaquinas] = useState<DropdownItem[]>([]);
-    console.log("maquina sample:", response[0]?.[0]);
     const [pisos, setPisos] = useState<DropdownItem[]>([]);
     const [estanterias, setEstanterias] = useState<DropdownItem[]>([]);
     const [estados, setEstados] = useState<DropdownItem[]>([]);
     const [actividades, setActividades] = useState<DropdownItem[]>([]);
-    console.log("actividad sample:", response[1]?.[0]);
     const [diesets, setDiesets] = useState<DropdownItem[]>([]);
 
     //const [maquinas, pisos, estanterias, actividades, diesets] = response || [[], [], [], [], []];
