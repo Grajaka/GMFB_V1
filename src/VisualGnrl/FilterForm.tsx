@@ -1,11 +1,11 @@
 import '../styles/globals.css'
 import Search from '../Components/Search.jsx';
-import { useId } from 'react';
+import { useId, useState } from 'react';
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as React from 'react';
 import { useForm } from "react-hook-form";
 import { HerramentalModelSchema } from "../Hooks/Validators/HerramentalEsp.js";
 import { useHerramental } from '../Hooks/useAxios/useHerramental.js'
+import MenuIcon from '@mui/icons-material/Menu';
 
 
 // Seleccionamos solo lo necesario para el filtro
@@ -20,16 +20,31 @@ const FilterFormSchema = HerramentalModelSchema.pick({
 });
 
 export default function FilterForm({
+    isOpen: propIsOpen,
+    setIsOpen: propSetIsOpen,
     globalFilter,
     setGlobalFilter,
     onApplyFilters
 }: {
+    isOpen?: boolean;
+    setIsOpen?: (value: boolean) => void;
     globalFilter?: string;
     setGlobalFilter?: (value: string) => void;
     onApplyFilters?: (filters: any) => void;
 }) {
     const { useGetLookups } = useHerramental();
     const selectId = useId();
+
+    const [internalIsOpen, setInternalIsOpen] = useState(true);
+    const isOpen = propIsOpen !== undefined ? propIsOpen : internalIsOpen;
+
+    const toggleOpen = () => {
+        if (propSetIsOpen) {
+            propSetIsOpen(!isOpen);
+        } else {
+            setInternalIsOpen(!isOpen);
+        }
+    };
 
     // 1. Obtenemos todos los datos usando el nuevo hook
     const { tipos, familias, maquinas, estanterias, dieSets } = useGetLookups();
@@ -60,19 +75,29 @@ export default function FilterForm({
     return (
         <form
             onSubmit={handleSubmit(onSubmit)}
-            className="bg-orangeFB h-full hidden sm:block flex-col gap-3 px-5 py-6 shadow-3xl"
+            className={`bg-orangeFB h-full flex flex-col  
+            shadow-3xl fixed inset-y-0 left-0 z-50 w-64 p-2
+            transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'
+                }`}
         >
+            <button
+                type="button"
+                className="absolute top-4 -right-12 z-50 p-2 rounded-r-md bg-orangeFB text-white shadow-md hover:bg-orange-600 focus:outline-none cursor-pointer flex items-center justify-center"
+                onClick={toggleOpen}>
+                <MenuIcon fontSize="large" className="text-blueFB" />
+            </button>
+
             {setGlobalFilter && (
-                <Search globalFilter={globalFilter ?? ''} setGlobalFilter={setGlobalFilter} />
+                <Search globalFilter={globalFilter ?? ''} setGlobalFilter={setGlobalFilter} onToggleMenu={toggleOpen} />
             )}
 
             {isLoading ? (
                 <p className="text-white text-xs animate-pulse">Cargando filtros...</p>
             ) : (
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-2">
                     {/* Ubicación / Estanterías */}
                     <div>
-                        <label className="block p-2 text-sm font-bold">Ubicación</label>
+                        <label className="p-2 text-sm font-bold">Ubicación</label>
                         <select onChange={(e) => setValue('hesp_IdEstanteria', Number(e.target.value))}>
                             <option value="">Estante</option>
                             {Array.isArray(estanterias.data) && estanterias.data.map((est: any) => (

@@ -26,7 +26,9 @@ export default function Login() {
             await login(userName, psw);
             navigate("/VisualGnrlv2");
         } catch (err: any) {
-            setLocalError(err?.message || err?.error || "Error de credenciales o de servidor");
+            console.error("Error during login submit:", err);
+            const apiError = err?.response?.data?.detail || err?.response?.data?.message || err?.message || err?.error || "Error de credenciales o de servidor";
+            setLocalError(apiError);
         } finally {
             setIsSubmitting(false);
         }

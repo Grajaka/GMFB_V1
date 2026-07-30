@@ -11,15 +11,32 @@ const useAxios = () => {
 
 
     const axiosInstance = axios.create({
-        baseURL: "http://10.1.1.14:8000"
+        //baseURL: "http://10.1.0.226:8000/"
         //baseURL: "http://localhost:8000"
+        //baseURL: "http://10.1.0.226:8000/"
+        baseURL: "http://127.0.0.1:8000/",
     });
 
     axiosInstance.interceptors.request.use(
         (config) => {
             const token = localStorage.getItem('token');
-            if (token) {
-                config.headers.Authorization = `Bearer ${token}`;
+            if (token && token !== 'undefined' && token !== 'null' && token !== 'session_active') {
+                let bearerToken = token;
+                try {
+                    const parsed = JSON.parse(token);
+                    if (parsed?.tokens?.access) {
+                        bearerToken = parsed.tokens.access;
+                    } else if (parsed?.token?.access) {
+                        bearerToken = parsed.token.access;
+                    } else if (parsed?.access) {
+                        bearerToken = parsed.access;
+                    }
+                } catch (e) {
+                    // Token is a plain string
+                }
+                if (bearerToken && bearerToken !== 'undefined' && bearerToken !== 'null' && bearerToken !== 'session_active') {
+                    config.headers.Authorization = `Bearer ${bearerToken}`;
+                }
             }
             return config;
         },
@@ -32,6 +49,13 @@ const useAxios = () => {
             return response;
         },
         (error) => {
+            if (error.response?.status === 401) {
+                if (window.location.pathname !== '/Login' && window.location.pathname !== '/login') {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    window.location.href = '/Login';
+                }
+            }
             return Promise.reject(error);
         });
     const controllerRef = useRef(new AbortController());

@@ -1,6 +1,4 @@
 import '../styles/globals.css'
-import * as React from 'react';
-import Switch from '@mui/material/Switch';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import { blue } from '@mui/material/colors';
 import Avatar from '@mui/material/Avatar';
@@ -25,49 +23,6 @@ import {
     getSortedRowModel,
 } from '@tanstack/react-table';
 import Pagination from "@mui/material/Pagination";
-
-
-
-/*
-const initialMoldes = [
-    {
-        qr: "src/assets/qr-code.png",
-        id: 1,
-        name: "M-HX01",
-        image: "src/assets/MoldesImg/M-HX01.JPEG",
-        machine: "Ona",
-        state: "Taller",
-    },
-    {
-        qr: "src/assets/qr-code.png",
-        id: 2,
-        name: "M-HX02",
-        image: "src/assets/MoldesImg/M-HX02.JPEG",
-        machine: "24",
-        state: "Taller",
-    },
-    {
-        qr: "src/assets/qr-code.png",
-        id: 3,
-        name: "M-HX03",
-        image: "src/assets/MoldesImg/M-HX03.JPEG",
-        machine: "16",
-        state: "Taller",
-    },
-    {
-        qr: "src/assets/qr-code.png",
-        id: 4,
-        name: "M-HX05",
-        image: "src/assets/MoldesImg/M-HX05.JPEG",
-        machine: "22",
-        state: "Taller",
-
-    },
-]
-*/
-
-
-
 import useToolImage from "../Hooks/useToolImage.js";
 import useToolQrCode from "../Hooks/useToolQrCode.js";
 import QRCode from "react-qr-code";
@@ -241,7 +196,37 @@ export default function VisualGnrlv2() {
 
     }
 
-    if (error) return <div>Error: {error}</div>;
+    if (error) {
+        const errorMessage = typeof error === 'object'
+            ? (error.detail || error.message || JSON.stringify(error))
+            : String(error);
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4 p-6 text-center">
+                <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-lg shadow-md max-w-lg">
+                    <h3 className="text-lg font-bold text-red-800 mb-2">Error de Autenticación / Conexión</h3>
+                    <p className="text-sm">{errorMessage}</p>
+                </div>
+                <div className="flex gap-4">
+                    <button
+                        onClick={() => {
+                            localStorage.removeItem('token');
+                            localStorage.removeItem('user');
+                            navigate('/Login');
+                        }}
+                        className="btn btn-blue text-sm"
+                    >
+                        Iniciar Sesión Nuevamente
+                    </button>
+                    <button
+                        onClick={() => window.location.reload()}
+                        className="btn btn-orange text-sm"
+                    >
+                        Reintentar
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <>
@@ -329,7 +314,7 @@ function Molde({ molde, onNavigate }) {
     const qrCodeValue = useToolQrCode(molde);
 
     return (
-        <li className="molde-list-item" onClick={onNavigate} style={{ cursor: 'pointer' }}>
+        <li className="molde-list-item" >
             <div className="col-start-1 row-span-5 self-center justify-self-center w-auto h-auto object-cover">
                 <Avatar
                     alt={molde.hesp_CodigoHerramental}
@@ -339,12 +324,15 @@ function Molde({ molde, onNavigate }) {
                     className=" col-start-1 row-span-5 items-center m-5"
                 />
             </div>
+            <div className="col-start-3 row-start-1 row-end-5" onClick={onNavigate} style={{ cursor: 'pointer' }}>
+                <h3 className="col-start-3 row-start-1 justify-self-start">{molde.hesp_CodigoHerramental}</h3>
+                <p className="col-start-3 row-start-2 row-end-3 justify-self-start bg-blue-50">Estado: {molde.nombre_estado_Herr} </p>
+                <p className="col-start-3 row-start-3 row-end-4 justify-self-start bg-blue-50">Máquina: {molde.nombre_maquina_pp} </p>
+                <p className="col-start-3 row-start-4 row-end-5 justify-self-start bg-blue-50">Código alterno: {molde.hesp_CodigoAlterno} </p>
+
+            </div>
 
 
-            <h3 className="col-start-3 row-start-1 justify-self-start">{molde.hesp_CodigoHerramental}</h3>
-            <p className="col-start-3 row-start-2 row-end-3 justify-self-start bg-blue-50">Estado: {molde.nombre_estado_Herr} </p>
-            <p className="col-start-3 row-start-3 row-end-4 justify-self-start bg-blue-50">Máquina: {molde.nombre_maquina_pp} </p>
-            <p className="col-start-3 row-start-4 row-end-5 justify-self-start bg-blue-50">Código alterno: {molde.hesp_CodigoAlterno} </p>
 
             <div className="col-start-2 row-span-5 self-center justify-self-center w-auto h-auto bg-white flex items-center justify-center border border-gray-300 rounded  shadow-sm m-2">
                 <QRCode
@@ -355,14 +343,16 @@ function Molde({ molde, onNavigate }) {
             </div>
 
             {user && user.user_type !== 3 && (
-                <div className="col-start-5 row-span-2 m-2 bg-blue-50">
-                    <Link to="/CreateActivity">
-                        <ChecklistIcon />
+                <div className="col-start-5 row-span-2 bg-blue-50 ">
+                    <Link to={`/CreateActivity/${molde.hesp_IdHerramentalEspecifico}`}>
+                        <button className='p-2 mx-2 rounded-full hover:bg-blueFB/20'>
+                            <ChecklistIcon />
+                        </button>
                     </Link>
 
                     {/* Agrega el botón de editar con el icono */}
                     <Link to={`/EditHerramental/${molde.hesp_IdHerramentalEspecifico}`}>
-                        <button>
+                        <button className='p-2 mx-2 rounded-full hover:bg-blueFB/20'>
                             <ModeEditIcon sx={{ color: blue[500], cursor: 'pointer' }} />
                         </button>
                     </Link>

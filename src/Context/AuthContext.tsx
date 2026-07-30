@@ -22,10 +22,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // Load initial session on mount
         const storedToken = localStorage.getItem('token');
         const storedUser = localStorage.getItem('user');
-        if (storedToken && storedUser) {
+        if (storedUser) {
             try {
                 const parsedUser = JSON.parse(storedUser) as User;
-                setToken(storedToken);
+                parsedUser.user_type = mapRoleToType(parsedUser.user_type ?? parsedUser.role);
+                setToken(storedToken || 'session_active');
                 setUser(parsedUser);
             } catch (err) {
                 console.error("Failed to parse stored user session", err);
@@ -40,23 +41,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setError(null);
         try {
             const response = await AuthService.login(us_User, us_Password);
-            const { token: receivedToken, user: receivedUser } = response;
+            const receivedToken = response.access || (response as any).token || (response as any).key || (response as any).auth_token || 'session_active';
+            const rawUser = response.usuario || (response as any).user || response;
+            if (!rawUser || typeof rawUser !== 'object') {
+                throw new Error("Respuesta de usuario inválida del servidor");
+            }
+            const rawUserType = rawUser.user_type ?? rawUser.tipo_usuario ?? rawUser.role ?? rawUser.tipo_usuario_nombre;
+            const numericUserType = mapRoleToType(rawUserType);
 
             // Construct frontend User object, mapping its role to the numeric type 1, 2, or 3
             const mappedUser: User = {
-                id: receivedUser.id,
-                username: receivedUser.username,
-                role: receivedUser.role,
-                user_type: mapRoleToType(receivedUser.role)
+                id: rawUser.id ?? 1,
+                username: rawUser.username || rawUser.user || rawUser.nombre || us_User,
+                role: typeof rawUser.role === 'string' ? rawUser.role : (rawUser.tipo_usuario_nombre || 'ADMIN'),
+                user_type: numericUserType
             };
-            // Persist session
+            // Persistir sesión con el token de acceso
             localStorage.setItem('token', receivedToken);
             localStorage.setItem('user', JSON.stringify(mappedUser));
             setToken(receivedToken);
             setUser(mappedUser);
         } catch (err: any) {
             console.error("Login failed", err);
-            const errorMessage = err?.message || err?.error || "Error de inicio de sesión";
+            const errorMessage = err?.response?.data?.detail || err?.response?.data?.message || err?.message || err?.error || "Error de inicio de sesión";
             setError(errorMessage);
             throw err;
         } finally {
@@ -71,7 +78,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(null);
         setError(null);
     };
-    const isAuthenticated = !!token;
+    const isAuthenticated = !!token || !!user;
     return (
         <AuthContext.Provider value={{ user, token, isAuthenticated, loading, login, logout, error }}>
             {children} {/*Represents any component that's  gonna use the provider */}

@@ -2,7 +2,7 @@ import * as React from 'react';
 import '../styles/globals.css'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
-import MenuIcon from '@mui/icons-material/Menu';
+
 
 
 let theme = createTheme({
@@ -24,16 +24,13 @@ theme = createTheme(theme, {
 export default function Search({ globalFilter, setGlobalFilter }) {
     return (
         <ThemeProvider theme={theme}>
-            <div className="flex-row inline-flex items-center ml-0 m-5">
-                <MenuIcon fontSize="large" color="blueFB" />
+            <div className="flex-row inline-flex items-center mb-5 mt-5">
                 <input
                     value={globalFilter ?? ''}
                     onChange={e => setGlobalFilter(e.target.value)}
-                    placeholder="Busca en todos los datos"
-                    className="p-2 border border-gray-300 rounded">
+                    placeholder="Busca por palabra clave"
+                    className=" border-light-greyFB bg-white rounded-sm border-2">
                 </input>
-                {/* <input className="rounded-r-none font-semibold<"  type="text" placeholder="Buscar"/>
-                <button className="bg-white h-10.5 border-l-gray-500 rounded-r-sm "><SearchIcon color={"blueFB"}/></button> */}
             </div>
         </ThemeProvider>
 

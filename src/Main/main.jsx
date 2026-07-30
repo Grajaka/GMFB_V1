@@ -42,6 +42,7 @@ const router = createBrowserRouter([
     { path: '/EditHerramental/:id', element: <ProtectedRoute allowedTypes={[1, 2]}><EditHerramental /></ProtectedRoute> },
     { path: '/CreateUbicDieSet', element: <ProtectedRoute allowedTypes={[1, 2]}><CreateUbicDieSet /></ProtectedRoute> },
 
+
 ]);
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'

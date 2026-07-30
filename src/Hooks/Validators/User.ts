@@ -16,10 +16,15 @@ export interface User {
     user_type: number; // 1 = Administrador/ADMIN, 2 = Operador/OPERADOR, 3 = Visualizador/CONSULTA
 }
 
-export const mapRoleToType = (role: string | number | undefined | null): number => {
-    if (!role) return 3;
+export const mapRoleToType = (role: any): number => {
+    if (role === undefined || role === null) return 3;
     if (typeof role === 'number') return role;
-    const r = String(role).toUpperCase();
+    if (typeof role === 'object') {
+        if ('id' in role && typeof role.id === 'number') return role.id;
+        if ('id' in role && !isNaN(Number(role.id))) return Number(role.id);
+        if ('nombre' in role) return mapRoleToType(role.nombre);
+    }
+    const r = String(role).toUpperCase().trim();
     if (r === 'ADMINISTRADOR' || r === 'ADMIN' || r === '1') return 1;
     if (r === 'OPERADOR' || r === '2') return 2;
     if (r === 'VISUALIZADOR' || r === 'CONSULTA' || r === '3') return 3;
@@ -27,12 +32,16 @@ export const mapRoleToType = (role: string | number | undefined | null): number 
 };
 
 export interface LoginResponse {
-    token: string;
-    user: {
+    access: string;
+    refresh: string;
+    usuario: {
         id: number;
-        username: string;
-        role: string;
+        user: string;
+        nombre: string;
+        tipo_usuario: number;
+        tipo_usuario_nombre: string;
     };
+    mensaje?: string;
 }
 
 export interface ApiError {
